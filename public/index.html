@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Yasmin &amp; Edgar · Nos casamos (Borrador)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Parisienne&family=Cinzel:wght@500;600;700&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+:root {
+  --night: #4a0f1c;
+  --night-deep: #2c0810;
+  --plum: #8a1538;
+  --plum-soft: #a01d41;
+  --burgundy-bright: #c41e4f;
+  --cream: #f8f1e2;
+  --cream-dark: #e6dcb8;
+  --ink: #2b2a1c;
+  --ink-soft: #6e6b52;
+  --gold: #c9973f;
+  --gold-dark: #a3721f;
+  --gold-light: #f2d78c;
+  --gold-shine: linear-gradient(120deg, #a3721f, #f2d78c 45%, #c9973f 65%, #f2d78c 90%);
+  --white: #fffdf8;
+  --olive: #5c7a29;
+  --olive-deep: #33430f;
+  --olive-bright: #7c9c3f;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  background:
+    radial-gradient(ellipse at 20% 0%, rgba(196,30,79,0.20), transparent 55%),
+    radial-gradient(ellipse at 85% 100%, rgba(201,151,63,0.16), transparent 50%),
+    linear-gradient(160deg, var(--olive-deep), #202a0d 70%);
+  color: var(--ink);
+  min-height: 100vh;
+  display: flex; justify-content: center;
+}
+h1,h2,h3 { font-family: 'Cinzel', serif; margin: 0; font-weight: 600; letter-spacing: 0.02em; }
+p { line-height: 1.65; margin: 0; }
+.script { font-family: 'Parisienne', cursive; }
+
+.card { width: 100%; max-width: 500px; background: var(--cream); min-height: 100vh; position: relative; overflow: hidden; box-shadow: 0 0 70px rgba(0,0,0,0.45); }
+
+.reveal { opacity: 0; transform: translateY(18px); transition: opacity 0.8s ease, transform 0.8s ease; }
+.reveal.show { opacity: 1; transform: translateY(0); }
+
+/* --- barra flotante superior (musica / idioma) --- */
+.top-bar-fixed {
+  position: fixed; top: 14px; left: 50%; transform: translateX(-50%);
+  width: 100%; max-width: 500px; display: flex; justify-content: flex-end;
+  padding: 0 16px; z-index: 40; pointer-events: none;
+}
+.float-btn {
+  pointer-events: auto; background: rgba(74,15,28,0.65); backdrop-filter: blur(6px);
+  color: var(--gold-light); border: 1px solid rgba(242,215,140,0.4); border-radius: 999px;
+  padding: 8px 14px; font-size: 0.8rem; font-family: 'Cormorant Garamond', serif; cursor: pointer;
+  display: flex; align-items: center; gap: 6px;
+}
+
+/* --- nav de accesos rapidos (fecha, lugar, regalos, confirmar, fotos) --- */
+.quick-nav {
+  position: sticky; top: 0; z-index: 30; background: rgba(248,241,226,0.96); backdrop-filter: blur(6px);
+  border-bottom: 1px solid var(--cream-dark); padding: 10px 10px; display: flex; gap: 8px;
+  overflow-x: auto; scrollbar-width: none;
+}
+.quick-nav::-webkit-scrollbar { display: none; }
+.quick-nav a {
+  flex-shrink: 0; text-decoration: none; font-size: 0.76rem; letter-spacing: 0.04em;
+  color: var(--plum); border: 1.2px solid var(--gold); padding: 7px 14px; border-radius: 999px;
+  white-space: nowrap; font-family: 'Cormorant Garamond', serif; font-weight: 600;
+}
+.quick-nav a:active, .quick-nav a:hover { background: var(--gold-shine); color: var(--night-deep); border-color: transparent; }
+
+/* --- Video de apertura (7s) que se aleja y da paso a los nombres --- */
+.seal-overlay {
+  position: fixed; inset: 0; background: #14100c;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  z-index: 50; transition: opacity 0.7s ease, visibility 0.7s ease; overflow: hidden;
+}
+.seal-overlay.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+
+.intro-video-wrap {
+  position: absolute; inset: 0; overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+  background: radial-gradient(ellipse at center, #3a2a16, #14100c 78%);
+}
+.intro-video-wrap video {
+  width: 100%; height: 100%; object-fit: contain; display: block;
+}
+.intro-flash {
+  position: absolute; inset: 0; pointer-events: none; z-index: 1;
+  background: radial-gradient(circle at 50% 42%, rgba(255,244,214,0.95), rgba(242,215,140,0.35) 32%, transparent 62%);
+  opacity: 0;
+}
+.intro-video-wrap.zoomed .intro-flash { animation: intro-flash-glow 1.8s ease forwards; }
+@keyframes intro-flash-glow {
+  0% { opacity: 0; }
+  22% { opacity: 1; }
+  100% { opacity: 0.32; }
+}
+.intro-video-wrap::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(180deg, transparent 45%, rgba(20,14,8,0.55) 100%);
+  opacity: 0; transition: opacity 1.2s ease;
+}
+.intro-video-wrap.zoomed::after { opacity: 1; }
+
+
+.intro-content {
+  position: relative; z-index: 2; text-align: center; padding: 0 30px;
+  opacity: 0; transform: translateY(18px);
+  transition: opacity 1.1s ease 0.6s, transform 1.1s ease 0.6s;
+}
+.intro-content.show { opacity: 1; transform: translateY(0); }
+.intro-content .script { color: var(--gold-light); font-size: 2.1rem; text-shadow: 0 0 24px rgba(242,215,140,0.5); }
+.intro-btn {
+  margin-top: 24px; display: inline-block; padding: 13px 30px; border-radius: 999px;
+  background: var(--gold-shine); color: var(--night-deep); font-weight: 600; font-size: 0.9rem;
+  border: none; cursor: pointer; font-family: 'Cormorant Garamond', serif;
+  box-shadow: 0 8px 22px rgba(0,0,0,0.35);
+}
+
+.seal-hint { margin-top: 20px; font-size: 0.74rem; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(250,246,236,0.7); }
+
+.ornament { display: flex; align-items: center; justify-content: center; gap: 10px; margin: 4px 0; }
+.ornament .line { height: 1.5px; width: 40px; background: linear-gradient(90deg, transparent, var(--gold-light)); }
+.ornament .line.r { background: linear-gradient(90deg, var(--gold-light), transparent); }
+.ornament svg { width: 18px; height: 18px; }
+
+.inv-hero {
+  padding: 30px 30px 50px; text-align: center; color: var(--white); position: relative;
+  background: linear-gradient(180deg, rgba(74,15,28,0.35), rgba(44,8,16,0.85)),
+              url('https://images.pexels.com/photos/28115373/pexels-photo-28115373.jpeg?auto=compress&cs=tinysrgb&w=1200') center 30%/cover;
+}
+.inv-hero .eyebrow { font-style: italic; letter-spacing: 0.26em; text-transform: uppercase; font-size: 0.72rem; color: var(--gold-light); }
+.inv-hero h1 { font-family: 'Parisienne', cursive; font-weight: 400; font-size: 3.4rem; margin: 12px 0 4px; line-height: 1; color: var(--gold-light); text-shadow: 0 0 30px rgba(242,215,140,0.35), 0 2px 14px rgba(0,0,0,0.4); }
+.inv-hero .datebox { margin-top: 18px; display: inline-flex; gap: 10px; align-items: center; font-size: 0.76rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold-light); }
+
+.inv-for { text-align: center; padding: 34px 30px 8px; font-size: 1.08rem; font-style: italic; color: var(--plum); }
+.inv-for b { font-style: normal; }
+
+.section-block { padding: 36px 30px; }
+.section-block:nth-of-type(even) { background: linear-gradient(180deg, rgba(124,156,63,0.09), rgba(124,156,63,0) 60%); }
+.section-block .eyebrow { display: block; text-align: center; font-style: italic; letter-spacing: 0.22em; text-transform: uppercase; font-size: 0.72rem; color: var(--olive-deep); margin-bottom: 10px; }
+.section-block h2 { text-align: center; font-size: 1.4rem; color: var(--plum); margin-bottom: 6px; position: relative; }
+.section-block h2::after {
+  content: ""; display: block; width: 72px; height: 14px; margin: 12px auto 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 20'%3E%3Cpath d='M2 10 Q25 2 50 10 T98 10' stroke='%23c9973f' stroke-width='1.6' fill='none'/%3E%3Cpath d='M20 8 Q22 3 27 2' stroke='%23c9973f' stroke-width='1.3' fill='none'/%3E%3Cpath d='M36 12 Q34 17 29 18' stroke='%23c9973f' stroke-width='1.3' fill='none'/%3E%3Cpath d='M64 8 Q66 3 71 2' stroke='%23c9973f' stroke-width='1.3' fill='none'/%3E%3Cpath d='M80 12 Q78 17 73 18' stroke='%23c9973f' stroke-width='1.3' fill='none'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: center;
+}
+.story-text { text-align: center; color: var(--ink-soft); font-size: 0.98rem; max-width: 380px; margin: 14px auto 0; }
+
+.gallery { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 22px; }
+.gallery img { width: 100%; height: 150px; object-fit: cover; border-radius: 10px; border: 3px solid var(--white); box-shadow: 0 0 0 1.5px var(--gold), 0 8px 18px rgba(74,15,28,0.2); }
+.gallery img.tall { height: 100%; grid-row: span 2; }
+
+.story-video-wrap {
+  margin-top: 20px; border-radius: 14px; overflow: hidden; box-shadow: 0 10px 26px rgba(74,15,28,0.2);
+  border: 3px solid var(--white); outline: 1.5px solid var(--gold);
+}
+.story-video-wrap video { width: 100%; max-height: 420px; display: block; background: #000; }
+
+/* --- Padrinos --- */
+.padrinos-grid { margin-top: 22px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.padrino-card {
+  background: var(--white); border: 1px solid rgba(92,122,41,0.28); border-radius: 14px;
+  padding: 14px 10px; text-align: center; border-top: 3px solid var(--gold);
+}
+.padrino-card .role { font-size: 0.64rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--olive-deep); }
+.padrino-card .pname { font-family: 'Cinzel', serif; font-size: 0.82rem; color: var(--plum); margin-top: 6px; line-height: 1.35; }
+
+/* --- Papás --- */
+.parents-grid { margin-top: 22px; display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.parents-card { background: var(--white); border-radius: 14px; padding: 18px 12px; text-align: center; box-shadow: 0 8px 20px rgba(74,15,28,0.08); }
+.parents-card .role { font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold-dark); margin-bottom: 8px; }
+.parents-card .pname { font-family: 'Cinzel', serif; font-size: 0.9rem; color: var(--plum); line-height: 1.6; }
+
+.place-card {
+  margin-top: 20px; background: var(--white); border: 1px solid rgba(92,122,41,0.28); border-radius: 16px;
+  padding: 22px; text-align: center; box-shadow: 0 8px 22px rgba(74,15,28,0.08);
+}
+.place-card h3 { color: var(--plum); font-size: 1.1rem; margin-bottom: 4px; }
+.place-card p { color: var(--ink-soft); font-size: 0.9rem; }
+.place-card .tbd {
+  display: inline-block; margin-top: 10px; font-size: 0.76rem; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--gold-dark); background: rgba(201,151,63,0.14); padding: 6px 14px; border-radius: 999px;
+}
+
+.timeline { margin-top: 28px; display: flex; flex-direction: column; gap: 0; }
+.timeline-item { display: flex; gap: 18px; position: relative; padding-bottom: 26px; }
+.timeline-item:last-child { padding-bottom: 0; }
+.timeline-item .dotcol { display: flex; flex-direction: column; align-items: center; }
+.timeline-item .tdot { width: 12px; height: 12px; border-radius: 50%; background: var(--burgundy-bright); border: 2px solid var(--white); box-shadow: 0 0 0 2px var(--gold); flex-shrink: 0; }
+.timeline-item .tline { flex: 1; width: 1.5px; background: var(--cream-dark); margin-top: 4px; }
+.timeline-item:last-child .tline { display: none; }
+.timeline-item .ttime { font-family: 'Cinzel', serif; color: var(--olive-deep); font-size: 0.95rem; }
+.timeline-item .tlabel { font-size: 0.86rem; color: var(--ink-soft); margin-top: 2px; }
+
+.dress-card { margin-top: 20px; text-align: center; }
+.dress-card h3 { color: var(--plum); font-size: 1.02rem; margin-bottom: 10px; }
+.palette { display: flex; justify-content: center; gap: 10px; margin-top: 12px; }
+.palette .sw { width: 30px; height: 30px; border-radius: 50%; border: 2px solid var(--white); box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+
+/* --- Mesa de regalos / cuenta bancaria --- */
+.gift-card {
+  margin-top: 20px; text-align: center; background: linear-gradient(160deg, var(--night), var(--night-deep) 85%);
+  color: var(--cream); border-radius: 16px; padding: 26px 22px; box-shadow: 0 10px 26px rgba(0,0,0,0.25);
+}
+.gift-card p.lead { font-size: 0.92rem; color: rgba(250,246,236,0.85); max-width: 340px; margin: 0 auto; }
+.liverpool-btn {
+  display: inline-flex; align-items: center; gap: 8px; margin-top: 16px; padding: 12px 22px;
+  border-radius: 999px; background: var(--gold-shine); color: var(--night-deep); font-weight: 600;
+  text-decoration: none; font-size: 0.9rem; box-shadow: 0 6px 16px rgba(163,114,31,0.35);
+}
+.bank-box {
+  margin-top: 18px; background: rgba(255,255,255,0.08); border: 1px solid rgba(242,215,140,0.35);
+  border-radius: 12px; padding: 16px; text-align: left;
+}
+.bank-box .bank-row { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 6px 0; }
+.bank-box .bank-row + .bank-row { border-top: 1px solid rgba(255,255,255,0.1); }
+.bank-box .bank-label { font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold-light); }
+.bank-box .bank-value { font-size: 0.94rem; font-family: 'Cinzel', serif; letter-spacing: 0.02em; }
+.copy-btn {
+  border: 1px solid var(--gold-light); background: transparent; color: var(--gold-light); font-size: 0.72rem;
+  padding: 5px 10px; border-radius: 999px; cursor: pointer; font-family: inherit; flex-shrink: 0;
+}
+.gift-note { font-size: 0.78rem; color: rgba(250,246,236,0.6); margin-top: 14px; }
+
+.inv-rsvp { background: linear-gradient(160deg, var(--plum-soft), var(--night) 80%); color: var(--white); padding: 40px 30px; text-align: center; }
+.inv-rsvp .eyebrow { color: var(--gold-light); }
+.inv-rsvp h2 { color: var(--white); font-size: 1.4rem; margin-top: 8px; position: relative; }
+.inv-rsvp h2::after {
+  content: ""; display: block; width: 72px; height: 14px; margin: 12px auto 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 20'%3E%3Cpath d='M2 10 Q25 2 50 10 T98 10' stroke='%23f2d78c' stroke-width='1.6' fill='none'/%3E%3Cpath d='M20 8 Q22 3 27 2' stroke='%23f2d78c' stroke-width='1.3' fill='none'/%3E%3Cpath d='M36 12 Q34 17 29 18' stroke='%23f2d78c' stroke-width='1.3' fill='none'/%3E%3Cpath d='M64 8 Q66 3 71 2' stroke='%23f2d78c' stroke-width='1.3' fill='none'/%3E%3Cpath d='M80 12 Q78 17 73 18' stroke='%23f2d78c' stroke-width='1.3' fill='none'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: center;
+}
+.inv-rsvp p.sub { color: rgba(255,255,255,0.78); font-size: 0.9rem; margin-top: 8px; }
+.rsvp-form { margin-top: 22px; display: flex; flex-direction: column; gap: 12px; align-items: center; }
+.rsvp-form input[type="text"] {
+  padding: 10px 14px; border-radius: 9px; border: 1px solid rgba(242,215,140,0.5); background: rgba(255,255,255,0.1);
+  color: var(--white); font-size: 0.9rem; width: 220px; font-family: inherit;
+}
+.rsvp-form input[type="text"]::placeholder { color: rgba(255,253,248,0.6); }
+.rsvp-form select {
+  padding: 10px 14px; border-radius: 9px; border: 1px solid rgba(242,215,140,0.5); background: rgba(255,255,255,0.08);
+  color: var(--white); font-size: 0.9rem; width: 220px;
+}
+.rsvp-form select option { color: var(--ink); }
+.rsvp-btns { display: flex; gap: 12px; justify-content: center; margin-top: 6px; }
+.rsvp-btn {
+  padding: 13px 22px; border-radius: 999px; border: 1.4px solid var(--gold-light); background: transparent;
+  font-size: 0.92rem; color: var(--gold-light); cursor: pointer; font-family: inherit;
+}
+.rsvp-btn.chosen-yes { background: var(--gold-shine); border-color: transparent; color: var(--night-deep); font-weight: 600; }
+.rsvp-btn.chosen-no { background: rgba(255,255,255,0.2); border-color: rgba(255,255,255,0.4); color: var(--white); }
+.rsvp-msg { margin-top: 16px; font-size: 0.9rem; color: var(--gold-light); }
+
+.inv-pass-wrap { padding: 40px 30px 50px; text-align: center; }
+.inv-pass {
+  background: linear-gradient(160deg, var(--night), var(--night-deep) 80%); border-radius: 20px; padding: 30px; color: var(--cream);
+  border: 1px solid rgba(242,215,140,0.4); box-shadow: 0 10px 26px rgba(0,0,0,0.3);
+}
+.inv-pass .pass-label { font-size: 0.72rem; letter-spacing: 0.24em; text-transform: uppercase; opacity: 0.8; margin-bottom: 16px; }
+.inv-pass-qr { background: var(--white); border-radius: 12px; padding: 14px; display: inline-block; min-width: 140px; min-height: 140px; }
+.pass-locked { width: 140px; font-size: 0.76rem; line-height: 1.4; color: var(--ink-soft); text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 140px; }
+.inv-pass .pass-name { font-family: 'Cinzel', serif; font-size: 1.2rem; margin-top: 16px; }
+.inv-pass .pass-table { font-size: 0.8rem; color: var(--gold-light); margin-top: 6px; }
+.inv-pass .pass-count { font-size: 0.84rem; color: var(--gold-light); margin-top: 4px; }
+
+.inv-footer { text-align: center; padding: 0 24px 44px; font-size: 0.8rem; color: var(--ink-soft); }
+.inv-footer .pkg-tag { margin-top: 6px; font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gold-dark); }
+
+/* --- Libro de firmas --- */
+.gb-form { display: flex; flex-direction: column; gap: 8px; margin-top: 20px; }
+.gb-form input, .gb-form textarea {
+  padding: 10px 12px; border-radius: 8px; border: 1px solid var(--cream-dark); background: var(--white);
+  font-family: inherit; font-size: 0.9rem;
+}
+.gb-btn {
+  padding: 11px 20px; border-radius: 999px; border: none; background: var(--plum-soft); color: var(--white);
+  font-size: 0.88rem; cursor: pointer; font-family: inherit;
+}
+.gb-list { margin-top: 16px; display: flex; flex-direction: column; gap: 10px; max-height: 280px; overflow-y: auto; }
+.gb-entry { background: var(--white); border-radius: 10px; padding: 10px 12px; font-size: 0.85rem; border-left: 3px solid var(--gold); }
+.gb-entry b { color: var(--olive-deep); }
+.gb-entry .gb-date { display: block; font-size: 0.68rem; color: var(--ink-soft); margin-top: 2px; }
+.gb-empty { text-align: center; color: var(--ink-soft); font-size: 0.85rem; padding: 16px; }
+
+/* --- Fotos compartidas por invitados --- */
+.upload-zone {
+  border: 1.5px dashed var(--gold); border-radius: 12px; padding: 20px; text-align: center; cursor: pointer;
+  color: var(--gold-dark); font-size: 0.86rem; background: var(--white); display: block; margin-top: 20px;
+}
+.upload-status { text-align: center; font-size: 0.82rem; color: var(--ink-soft); margin-top: 10px; min-height: 18px; }
+.shared-gallery { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 16px; }
+.shared-gallery img, .shared-gallery video { width: 100%; height: 100px; object-fit: cover; border-radius: 8px; border: 2px solid var(--white); box-shadow: 0 3px 10px rgba(74,15,28,0.15); background: #000; }
+</style>
+</head>
+<body>
+
+<div class="top-bar-fixed">
+  <button class="float-btn" id="music-toggle" onclick="toggleMusic()">🔇 Música</button>
+</div>
+<audio id="bgm" loop>
+  <source src="media/beautiful-things.mp3" type="audio/mpeg">
+</audio>
+
+<div class="seal-overlay" id="seal-overlay">
+  <div class="intro-video-wrap" id="intro-video-wrap">
+    <video id="intro-video" autoplay muted playsinline preload="auto">
+      <source src="media/save-the-date-edgar-yasmin.mp4" type="video/mp4">
+      <source src="https://videos.pexels.com/video-files/14268100/14268100-hd_1080_1920_24fps.mp4" type="video/mp4">
+    </video>
+    <div class="intro-flash"></div>
+  </div>
+  <div class="intro-content" id="intro-content">
+    <div class="script">Yasmin &amp; Edgar</div>
+    <div class="seal-hint">23 de enero de 2027</div>
+    <button class="intro-btn" onclick="openInvitation()">Toca para abrir tu invitación</button>
+  </div>
+</div>
+
+<div class="card">
+
+  <nav class="quick-nav">
+    <a href="#fecha">📅 Fecha</a>
+    <a href="#lugar">📍 Lugar</a>
+    <a href="#regalos">🎁 Mesa de regalos</a>
+    <a href="#rsvp">✅ Confirmar</a>
+    <a href="#fotos">📷 Fotos</a>
+    <a href="#firmas">💌 Firmas</a>
+    <a href="#multimedia">🎥 Libro multimedia</a>
+  </nav>
+
+  <div class="inv-hero">
+    <span class="eyebrow">Nos casamos</span>
+    <h1>Yasmin &amp; Edgar</h1>
+    <div class="ornament">
+      <span class="line"></span>
+      <svg viewBox="0 0 40 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="15" cy="12" r="8" stroke="#c9973f" stroke-width="2"/><circle cx="25" cy="12" r="8" stroke="#c9973f" stroke-width="2"/></svg>
+      <span class="line r"></span>
+    </div>
+    <div class="datebox" id="hero-date">23 · Enero · 2027</div>
+  </div>
+
+  <div class="inv-for reveal">Con todo nuestro cariño para <b id="greeting-name">ti</b></div>
+
+  <div class="section-block reveal" id="fotos">
+    <span class="eyebrow">Un vistazo a nuestro estilo</span>
+    <h2>Fotos</h2>
+    <p class="story-text">Aquí iremos compartiendo fotos nuestras según se acerque la fecha. Por ahora, así imaginamos el ambiente de la celebración.</p>
+    <div class="gallery">
+      <img class="tall" src="fotos-boda/foto5-mesa-exterior.jpg" alt="Mesa larga exterior con mantel olivo y flores burgundy" loading="lazy" />
+      <img src="fotos-boda/foto4-place-setting.jpg" alt="Montaje de mesa con velas, dalias burgundy y servilleta olivo" loading="lazy" />
+      <img src="https://images.pexels.com/photos/28115373/pexels-photo-28115373.jpeg?auto=compress&cs=tinysrgb&w=500" alt="Ramo de rosas rojo burgundy" loading="lazy" />
+    </div>
+  </div>
+
+  <div class="section-block reveal" style="padding-top:0;" id="historia">
+    <span class="eyebrow">Cómo llegamos hasta aquí</span>
+    <h2>Nuestra historia</h2>
+    <p class="story-text">El video comienza solo en cuanto llegas aquí.</p>
+    <div class="story-video-wrap">
+      <video id="story-video" controls muted playsinline preload="metadata" poster="fotos-boda/foto5-mesa-exterior.jpg">
+        <source src="media/nuestra-historia.mp4" type="video/mp4">
+      </video>
+    </div>
+  </div>
+
+  <div class="section-block reveal" style="padding-top:0;">
+    <span class="eyebrow">Con cariño y gratitud</span>
+    <h2>Nuestros padrinos</h2>
+    <div class="padrinos-grid">
+      <div class="padrino-card"><div class="role">Padrino de velación / honor</div><div class="pname">José Bernabé Mendoza García &amp; Felipa Domínguez Lara</div></div>
+      <div class="padrino-card"><div class="role">Padrinos de arras</div><div class="pname">Jesús Salvador Sánchez Díaz &amp; Luz Aiko del Rosario Méndez Rubio</div></div>
+      <div class="padrino-card"><div class="role">Padrinos de lazo</div><div class="pname">Jesús Manuel Saucedo Chávez &amp; Alma García Rubalcaba</div></div>
+      <div class="padrino-card"><div class="role">Padrinos de anillo</div><div class="pname">Luis Sangabriel Sánchez &amp; Raquel Illescas García</div></div>
+    </div>
+  </div>
+
+  <div class="section-block reveal" style="padding-top:0;">
+    <span class="eyebrow">Con la bendición de</span>
+    <h2>Nuestros papás</h2>
+    <div class="parents-grid">
+      <div class="parents-card">
+        <div class="role">Papás de la novia</div>
+        <div class="pname">Martín Sangabriel Sánchez<br>Judith Mendoza García</div>
+      </div>
+      <div class="parents-card">
+        <div class="role">Papás del novio</div>
+        <div class="pname">Hugo Sánchez Valdivia<br>Verónica Torres Figueroa</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-block reveal" style="padding-top:0;" id="fecha">
+    <span class="eyebrow">Guarda la fecha</span>
+    <h2>Fecha y lugar</h2>
+    <div class="place-card">
+      <h3>📅 Fecha de la boda</h3>
+      <span class="tbd" id="fecha-detalle">23 de enero de 2027</span>
+    </div>
+    <div class="place-card" id="lugar">
+      <h3>⛪ Ceremonia religiosa</h3>
+      <p>1:00 PM</p>
+      <span class="tbd" id="lugar-detalle">Rectoría de la Divina Providencia</span>
+    </div>
+    <div class="place-card">
+      <h3>🥂 Recepción y cóctel</h3>
+      <p>2:30 PM</p>
+      <span class="tbd">Akura</span>
+    </div>
+
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="dotcol"><div class="tdot"></div><div class="tline"></div></div>
+        <div class="tcontent"><div class="ttime">1:00 PM</div><div class="tlabel">Ceremonia religiosa — Rectoría de la Divina Providencia</div></div>
+      </div>
+      <div class="timeline-item">
+        <div class="dotcol"><div class="tdot"></div><div class="tline"></div></div>
+        <div class="tcontent"><div class="ttime">2:30 PM</div><div class="tlabel">Recepción y cóctel — Akura</div></div>
+      </div>
+      <div class="timeline-item">
+        <div class="dotcol"><div class="tdot"></div><div class="tline"></div></div>
+        <div class="tcontent"><div class="ttime">3:30 PM</div><div class="tlabel">Ceremonia civil</div></div>
+      </div>
+      <div class="timeline-item">
+        <div class="dotcol"><div class="tdot"></div><div class="tline"></div></div>
+        <div class="tcontent"><div class="ttime">4:30 PM</div><div class="tlabel">Entrada de los novios</div></div>
+      </div>
+      <div class="timeline-item">
+        <div class="dotcol"><div class="tdot"></div><div class="tline"></div></div>
+        <div class="tcontent"><div class="ttime">4:40 PM</div><div class="tlabel">Banquete</div></div>
+      </div>
+      <div class="timeline-item">
+        <div class="dotcol"><div class="tdot"></div><div class="tline"></div></div>
+        <div class="tcontent"><div class="ttime">6:00 PM</div><div class="tlabel">Vals</div></div>
+      </div>
+      <div class="timeline-item">
+        <div class="dotcol"><div class="tdot"></div><div class="tline"></div></div>
+        <div class="tcontent"><div class="ttime">6:05 PM</div><div class="tlabel">Open party 🎉</div></div>
+      </div>
+      <div class="timeline-item">
+        <div class="dotcol"><div class="tdot"></div></div>
+        <div class="tcontent"><div class="ttime">11:30 PM</div><div class="tlabel">Finaliza el evento</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-block reveal" style="padding-top:0;">
+    <div class="dress-card">
+      <h3>Código de vestimenta — Formal</h3>
+      <p class="story-text" style="margin-top:0;">Tonos burgundy y verde olivo. Evita el blanco, por favor 🍷🌿</p>
+      <div class="palette">
+        <div class="sw" style="background:#8a1538"></div>
+        <div class="sw" style="background:#5c7a29"></div>
+        <div class="sw" style="background:#c9973f"></div>
+        <div class="sw" style="background:#e6dcb8"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-block reveal" style="padding-top:0;" id="regalos">
+    <span class="eyebrow">Con todo nuestro cariño</span>
+    <h2>Mesa de regalos</h2>
+    <div class="gift-card">
+      <p class="lead">Su presencia es el regalo más importante para nosotros. Si desean obsequiarnos algo más, aquí tienen dos opciones:</p>
+      <a href="https://mesaderegalos.liverpool.com.mx/milistaderegalos/51969748" target="_blank" rel="noopener" class="liverpool-btn">🎁 Ver mesa de regalos en Liverpool</a>
+      <div class="bank-box">
+        <div class="bank-row">
+          <div>
+            <div class="bank-label">Banco</div>
+            <div class="bank-value">Banamex</div>
+          </div>
+        </div>
+        <div class="bank-row">
+          <div>
+            <div class="bank-label">A nombre de</div>
+            <div class="bank-value">Yasmin Sangabriel Mendoza</div>
+          </div>
+        </div>
+        <div class="bank-row">
+          <div>
+            <div class="bank-label">CLABE interbancaria</div>
+            <div class="bank-value" id="clabe-text">0028 4070 2353 3598 96</div>
+          </div>
+          <button class="copy-btn" onclick="copyClabe()">Copiar</button>
+        </div>
+      </div>
+      <div class="gift-note" id="clabe-msg">Gracias por acompañarnos y celebrar con nosotros 💛</div>
+    </div>
+  </div>
+
+  <div class="inv-rsvp reveal" id="rsvp">
+    <span class="eyebrow">RSVP</span>
+    <h2>¿Nos acompañas?</h2>
+    <p class="sub" id="rsvp-sub">Confírmanos tu asistencia, por favor.</p>
+    <div class="rsvp-form">
+      <input type="text" id="rsvp-name" placeholder="Tu nombre completo" autocomplete="name" />
+      <select id="rsvp-count">
+        <option value="1">Voy solo/a (1 persona)</option>
+        <option value="2" selected>Vamos los 2</option>
+      </select>
+      <div class="rsvp-btns">
+        <button class="rsvp-btn" id="rsvp-yes" onclick="setRSVP(true)">Sí, ahí estaré</button>
+        <button class="rsvp-btn" id="rsvp-no" onclick="setRSVP(false)">No podré ir</button>
+      </div>
+      <div class="rsvp-msg" id="rsvp-msg"></div>
+    </div>
+  </div>
+
+  <div class="section-block reveal" style="padding-top:0;" id="firmas">
+    <span class="eyebrow">Déjanos un mensaje</span>
+    <h2>Libro de firmas</h2>
+    <p class="story-text">Escríbenos algo bonito — quedará guardado para siempre.</p>
+    <div class="gb-form">
+      <input type="text" id="gb-name" placeholder="Tu nombre" />
+      <textarea id="gb-msg" rows="3" placeholder="Tu mensaje para Yasmin y Edgar..."></textarea>
+      <button class="gb-btn" onclick="submitGuestbook()">Firmar el libro</button>
+    </div>
+    <div class="gb-list" id="gb-list"><div class="gb-empty">Cargando mensajes...</div></div>
+  </div>
+
+  <div class="section-block reveal" style="padding-top:0;" id="fotos-compartidas">
+    <span class="eyebrow">El momento es de todos</span>
+    <h2 id="multimedia">Libro multimedia</h2>
+    <p class="story-text">Sube las fotos y videos que tomes el día del evento para que quedemos con todos los recuerdos juntos en un solo lugar.</p>
+    <label class="upload-zone" for="photo-upload">📎 Toca para subir una foto o video</label>
+    <input type="file" id="photo-upload" accept="image/*,video/*" style="display:none" onchange="handlePhotoUpload(event)" />
+    <div class="upload-status" id="upload-status"></div>
+    <div class="shared-gallery" id="shared-gallery"></div>
+  </div>
+
+  <div class="inv-pass-wrap reveal">
+    <div class="inv-pass">
+      <div class="pass-label">Tu pase de entrada</div>
+      <div class="inv-pass-qr" id="pass-qr"></div>
+      <div class="pass-name" id="pass-name-text">Invitado de ejemplo</div>
+      <div class="pass-count" id="pass-count-text">Válido para 2 personas</div>
+      <div class="pass-table" id="pass-table-text"></div>
+    </div>
+  </div>
+
+  <div class="inv-footer">
+    Invitación hecha con <a href="index.html" style="color:var(--plum); border-bottom:1px solid var(--gold); text-decoration:none;">Invitaciones Digitales MX</a>
+    <div class="pkg-tag">Borrador</div>
+  </div>
+</div>
+
+<script>
+/* ---------------- MÚSICA ---------------- */
+let musicPlaying = false;
+function toggleMusic() {
+  const audio = document.getElementById('bgm');
+  const btn = document.getElementById('music-toggle');
+  if (musicPlaying) {
+    audio.pause();
+    btn.innerHTML = '🔇 Música';
+  } else {
+    audio.play().catch(() => {});
+    btn.innerHTML = '🎵 Música';
+  }
+  musicPlaying = !musicPlaying;
+}
+
+/* ---------------- APERTURA ---------------- */
+function openInvitation() {
+  document.getElementById('seal-overlay').classList.add('hidden');
+  const video = document.getElementById('intro-video');
+  if (video) video.pause();
+}
+
+function initIntro() {
+  const videoWrap = document.getElementById('intro-video-wrap');
+  const content = document.getElementById('intro-content');
+  const video = document.getElementById('intro-video');
+  let triggered = false;
+  function reveal() {
+    if (triggered) return;
+    triggered = true;
+    videoWrap.classList.add('zoomed');
+    content.classList.add('show');
+  }
+  if (video) {
+    video.addEventListener('ended', reveal);
+    video.addEventListener('error', () => { console.error('Error cargando el video de intro'); reveal(); });
+    video.play().catch(err => console.warn('Autoplay bloqueado:', err));
+  }
+  // Red de seguridad: si el video falla o no dispara 'ended', igual mostramos
+  // los nombres y el botón después de un par de segundos.
+  setTimeout(reveal, 3000);
+
+  // La música arranca junto con el video, no hasta que abren la invitación.
+  const audio = document.getElementById('bgm');
+  if (audio) {
+    audio.play().then(() => {
+      musicPlaying = true;
+      document.getElementById('music-toggle').innerHTML = '🎵 Música';
+    }).catch(() => {
+      // Algunos navegadores bloquean el audio con sonido hasta el primer toque:
+      // en cuanto el invitado toque la pantalla por primera vez, arrancamos la música.
+      const startOnFirstTouch = () => {
+        if (!musicPlaying) {
+          audio.play().then(() => {
+            musicPlaying = true;
+            document.getElementById('music-toggle').innerHTML = '🎵 Música';
+          }).catch(() => {});
+        }
+        document.removeEventListener('click', startOnFirstTouch);
+        document.removeEventListener('touchstart', startOnFirstTouch);
+      };
+      document.addEventListener('click', startOnFirstTouch, { once: true });
+      document.addEventListener('touchstart', startOnFirstTouch, { once: true });
+    });
+  }
+}
+
+/* ---------------- RSVP ---------------- */
+async function setRSVP(yes) {
+  const nameField = document.getElementById('rsvp-name');
+  const name = nameField.value.trim();
+  const msgEl = document.getElementById('rsvp-msg');
+  if (!name) {
+    msgEl.textContent = 'Por favor escribe tu nombre antes de confirmar 🙏';
+    nameField.focus();
+    return;
+  }
+  document.getElementById('rsvp-yes').classList.toggle('chosen-yes', yes === true);
+  document.getElementById('rsvp-no').classList.toggle('chosen-no', yes === false);
+  const count = Number(document.getElementById('rsvp-count').value);
+  msgEl.textContent = yes
+    ? `¡Gracias por confirmar, ${name}! Los esperamos 💛`
+    : `Gracias por avisarnos, ${name}. Los vamos a extrañar.`;
+
+  try {
+    if (currentGuest) {
+      const res = await fetch(`/api/guests/${currentGuest.id}/rsvp`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ attending: yes, count })
+      });
+      currentGuest.data = await res.json();
+    } else {
+      await fetch('/api/rsvp', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, count, attending: yes })
+      });
+    }
+  } catch (err) {
+    console.error(err);
+    msgEl.textContent += ' (hubo un problema de conexión, intenta de nuevo si puedes)';
+  }
+  renderPassQR();
+}
+document.getElementById('rsvp-count').addEventListener('change', function() {
+  document.getElementById('pass-count-text').textContent = `Válido para ${this.value} persona${this.value>1?'s':''}`;
+});
+
+/* ---------------- INVITADO PERSONALIZADO (?g=id) ---------------- */
+let currentGuest = null;
+
+async function initGuestContext() {
+  const params = new URLSearchParams(location.search);
+  const gid = params.get('g');
+  if (gid) {
+    try {
+      const res = await fetch(`/api/guests/${gid}`);
+      if (res.ok) currentGuest = { id: gid, data: await res.json() };
+    } catch (e) { /* enlace inválido o sin conexión: seguimos con el flujo genérico */ }
+  }
+  applyGuestContext();
+  renderPassQR();
+}
+
+function applyGuestContext() {
+  if (!currentGuest) return;
+  const g = currentGuest.data;
+  const nameField = document.getElementById('rsvp-name');
+  const countSelect = document.getElementById('rsvp-count');
+  const subEl = document.getElementById('rsvp-sub');
+  const greetName = document.getElementById('greeting-name');
+  const passName = document.getElementById('pass-name-text');
+  const passTable = document.getElementById('pass-table-text');
+
+  nameField.value = g.name;
+  nameField.readOnly = true;
+  if (greetName) greetName.textContent = g.name;
+  if (subEl) subEl.textContent = `Tu pase es válido para hasta ${g.passes} persona${g.passes > 1 ? 's' : ''}.`;
+
+  countSelect.innerHTML = '';
+  for (let i = 1; i <= g.passes; i++) {
+    const opt = document.createElement('option');
+    opt.value = i;
+    opt.textContent = i + (i > 1 ? ' personas' : ' persona');
+    if (i === g.passes) opt.selected = true;
+    countSelect.appendChild(opt);
+  }
+  if (passName) passName.textContent = g.name;
+  if (passTable) passTable.textContent = g.table_name ? `Mesa: ${g.table_name}` : '';
+
+  if (g.status === 'yes' || g.status === 'no') {
+    document.getElementById('rsvp-yes').classList.toggle('chosen-yes', g.status === 'yes');
+    document.getElementById('rsvp-no').classList.toggle('chosen-no', g.status === 'no');
+    document.getElementById('rsvp-msg').textContent = g.status === 'yes'
+      ? `Ya habías confirmado para ${g.responded_count || g.passes} persona${(g.responded_count || g.passes) > 1 ? 's' : ''} 💛`
+      : 'Ya nos habías avisado que no podrás ir. Si cambias de opinión, contesta de nuevo.';
+  }
+}
+
+// El QR solo aparece cuando el invitado confirmó que sí asistirá.
+function renderPassQR() {
+  const container = document.getElementById('pass-qr');
+  const attending = currentGuest ? currentGuest.data.status === 'yes' : document.getElementById('rsvp-yes').classList.contains('chosen-yes');
+  container.innerHTML = '';
+  if (!attending) {
+    container.innerHTML = '<div class="pass-locked">🔒<br>Tu código QR aparecerá aquí en cuanto confirmes que sí asistirás</div>';
+    return;
+  }
+  const link = currentGuest ? location.origin + location.pathname + '?g=' + currentGuest.id : location.href;
+  new QRCode(container, { text: link, width: 140, height: 140, colorDark: '#4a0f1c', colorLight: '#fffdf8' });
+}
+
+/* ---------------- COPIAR CLABE ---------------- */
+function copyClabe() {
+  const clabe = '002840702353359896';
+  navigator.clipboard.writeText(clabe).then(() => {
+    document.getElementById('clabe-msg').textContent = '¡CLABE copiada! ✅';
+  }, () => {
+    document.getElementById('clabe-msg').textContent = 'Cópiala manualmente: ' + clabe;
+  });
+}
+
+/* ---------------- LIBRO DE FIRMAS ---------------- */
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str == null ? '' : str;
+  return div.innerHTML;
+}
+
+async function loadGuestbook() {
+  const list = document.getElementById('gb-list');
+  try {
+    const res = await fetch('/api/guestbook');
+    const entries = await res.json();
+    if (!entries.length) {
+      list.innerHTML = '<div class="gb-empty">Sé el primero en firmar el libro 💌</div>';
+      return;
+    }
+    list.innerHTML = entries.map(e => {
+      const date = new Date(e.created_at);
+      const dateStr = isNaN(date) ? '' : date.toLocaleDateString('es-MX', { day: '2-digit', month: 'short' });
+      return `<div class="gb-entry"><b>${escapeHtml(e.name)}</b>: ${escapeHtml(e.message)}<span class="gb-date">${dateStr}</span></div>`;
+    }).join('');
+  } catch (err) {
+    list.innerHTML = '<div class="gb-empty">No se pudieron cargar los mensajes.</div>';
+  }
+}
+
+async function submitGuestbook() {
+  const nameEl = document.getElementById('gb-name');
+  const msgEl = document.getElementById('gb-msg');
+  const name = nameEl.value.trim();
+  const message = msgEl.value.trim();
+  if (!name || !message) { alert('Escribe tu nombre y un mensaje.'); return; }
+  try {
+    await fetch('/api/guestbook', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, message })
+    });
+    nameEl.value = ''; msgEl.value = '';
+    loadGuestbook();
+  } catch (err) {
+    alert('No se pudo guardar tu mensaje. Intenta de nuevo.');
+  }
+}
+
+/* ---------------- FOTOS COMPARTIDAS ---------------- */
+async function loadSharedGallery() {
+  const gallery = document.getElementById('shared-gallery');
+  try {
+    const res = await fetch('/api/photos');
+    const photos = await res.json();
+    gallery.innerHTML = photos.map(p => {
+      const who = escapeHtml(p.guest_name || 'un invitado');
+      if (p.image_data.startsWith('data:video/')) {
+        return `<video src="${p.image_data}" controls playsinline preload="metadata" aria-label="Video compartido por ${who}"></video>`;
+      }
+      return `<img src="${p.image_data}" alt="Foto compartida por ${who}" loading="lazy" />`;
+    }).join('');
+  } catch (err) {
+    gallery.innerHTML = '';
+  }
+}
+
+function handlePhotoUpload(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const statusEl = document.getElementById('upload-status');
+  event.target.value = '';
+
+  if (file.type.startsWith('video/')) {
+    const maxBytes = 5 * 1024 * 1024; // ~5MB crudos, para no pasar el límite del servidor en base64
+    if (file.size > maxBytes) {
+      statusEl.textContent = 'Ese video pesa mucho para subirlo aquí (máx. ~5MB). Prueba con uno más corto o comprimido.';
+      return;
+    }
+    statusEl.textContent = 'Subiendo video...';
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      try {
+        const res = await fetch('/api/photos', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ guest_name: currentGuest ? currentGuest.data.name : null, image_data: e.target.result })
+        });
+        if (!res.ok) throw new Error('upload failed');
+        statusEl.textContent = '¡Video subido! Gracias por compartirlo 💛';
+        loadSharedGallery();
+      } catch (err) {
+        statusEl.textContent = 'No se pudo subir el video. Intenta de nuevo.';
+      }
+    };
+    reader.readAsDataURL(file);
+    return;
+  }
+
+  statusEl.textContent = 'Subiendo foto...';
+  const img = new Image();
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    img.onload = async () => {
+      // Comprimimos en el navegador para no saturar la base de datos
+      const maxW = 1200;
+      const scale = Math.min(1, maxW / img.width);
+      const canvas = document.createElement('canvas');
+      canvas.width = img.width * scale;
+      canvas.height = img.height * scale;
+      canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+      const dataUrl = canvas.toDataURL('image/jpeg', 0.75);
+
+      try {
+        const res = await fetch('/api/photos', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ guest_name: currentGuest ? currentGuest.data.name : null, image_data: dataUrl })
+        });
+        if (!res.ok) throw new Error('upload failed');
+        statusEl.textContent = '¡Foto subida! Gracias por compartirla 💛';
+        loadSharedGallery();
+      } catch (err) {
+        statusEl.textContent = 'No se pudo subir la foto. Intenta de nuevo.';
+      }
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+/* ---------------- VIDEO "NUESTRA HISTORIA": play al llegar ---------------- */
+(function initStoryVideo() {
+  const storyVideo = document.getElementById('story-video');
+  if (!storyVideo || !('IntersectionObserver' in window)) return;
+  let played = false;
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting && !played) {
+        played = true;
+        storyVideo.play().catch(() => {});
+        obs.unobserve(storyVideo);
+      }
+    });
+  }, { threshold: 0.5 });
+  obs.observe(storyVideo);
+})();
+
+/* ---------------- REVEAL ON SCROLL ---------------- */
+const revealEls = document.querySelectorAll('.reveal');
+if ('IntersectionObserver' in window) {
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('show'); obs.unobserve(e.target); } });
+  }, { threshold: 0.15 });
+  revealEls.forEach(el => obs.observe(el));
+} else {
+  revealEls.forEach(el => el.classList.add('show'));
+}
+
+initGuestContext();
+loadGuestbook();
+loadSharedGallery();
+initIntro();
+</script>
+
+</body>
+</html>

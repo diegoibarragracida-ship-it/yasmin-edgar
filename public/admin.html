@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Panel de Yasmin &amp; Edgar — Nuestra boda</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+:root {
+  --night: #4a0f1c;
+  --night-deep: #2c0810;
+  --plum: #8a1538;
+  --plum-soft: #a01d41;
+  --cream: #f8f1e2;
+  --cream-dark: #e6dcb8;
+  --ink: #2b2a1c;
+  --ink-soft: #6e6b52;
+  --gold: #c9973f;
+  --gold-dark: #a3721f;
+  --gold-light: #f2d78c;
+  --white: #fffdf8;
+  --green: #3d5a1a;
+  --red: #a04030;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; font-family: 'Cormorant Garamond', Georgia, serif; color: var(--ink);
+  background: linear-gradient(160deg, var(--night), var(--night-deep) 75%);
+  min-height: 100vh;
+}
+h1, h2, h3 { font-family: 'Cinzel', serif; margin: 0; font-weight: 600; }
+
+/* ---------- LOGIN ---------- */
+#login-screen {
+  min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px;
+}
+.login-card {
+  background: var(--cream); border-radius: 18px; padding: 40px 32px; max-width: 380px; width: 100%;
+  text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+}
+.login-card .crown { font-size: 2.2rem; margin-bottom: 6px; }
+.login-card h1 { font-size: 1.3rem; color: var(--plum); margin-bottom: 4px; }
+.login-card p { font-size: 0.86rem; color: var(--ink-soft); margin-top: 6px; }
+.login-card input {
+  width: 100%; margin-top: 20px; padding: 12px 14px; border-radius: 10px; border: 1px solid var(--cream-dark);
+  font-family: inherit; font-size: 1rem; text-align: center; background: var(--white);
+}
+.login-card button {
+  margin-top: 14px; width: 100%; padding: 12px; border-radius: 10px; border: none;
+  background: var(--plum-soft); color: var(--white); font-size: 0.95rem; cursor: pointer; font-family: inherit;
+}
+.login-card .error { color: var(--red); font-size: 0.82rem; margin-top: 10px; min-height: 18px; }
+
+/* ---------- DASHBOARD ---------- */
+#dashboard { display: none; max-width: 1080px; margin: 0 auto; padding: 30px 20px 60px; }
+#dashboard.active { display: block; }
+
+.dash-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 26px; }
+.dash-header .title-block .eyebrow { display: block; font-style: italic; letter-spacing: 0.2em; text-transform: uppercase; font-size: 0.72rem; color: var(--gold-light); }
+.dash-header h1 { color: var(--white); font-size: 1.7rem; margin-top: 4px; }
+.dash-header .logout-btn {
+  background: rgba(255,255,255,0.1); border: 1px solid rgba(255,235,124,0.35); color: var(--gold-light);
+  padding: 9px 16px; border-radius: 999px; font-size: 0.82rem; cursor: pointer; font-family: inherit;
+}
+
+.dash-panel { background: var(--cream); border-radius: 18px; padding: 26px; margin-bottom: 22px; box-shadow: 0 12px 30px rgba(0,0,0,0.2); }
+.dash-panel h2 { color: var(--plum); font-size: 1.15rem; margin-bottom: 16px; }
+
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 14px; }
+.stat-card { background: var(--white); border: 1px solid rgba(97,100,47,0.2); border-radius: 14px; padding: 18px; text-align: center; }
+.stat-card strong { display: block; font-family: 'Cinzel', serif; font-size: 1.9rem; color: var(--plum); }
+.stat-card span { font-size: 0.74rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-soft); }
+
+.create-form { display: grid; grid-template-columns: 2fr 1fr auto; gap: 12px; align-items: end; }
+.create-form label { display: block; font-size: 0.76rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-soft); margin-bottom: 6px; }
+.create-form input {
+  width: 100%; padding: 11px 13px; border-radius: 9px; border: 1px solid var(--cream-dark); font-family: inherit; font-size: 0.95rem;
+}
+.create-form button {
+  padding: 11px 20px; border-radius: 9px; border: none; background: var(--plum-soft); color: var(--white);
+  font-size: 0.9rem; cursor: pointer; font-family: inherit; white-space: nowrap;
+}
+@media (max-width: 560px) { .create-form { grid-template-columns: 1fr; } }
+
+.gen-result { margin-top: 18px; background: var(--night); color: var(--cream); border-radius: 14px; padding: 20px; display: none; }
+.gen-result.show { display: flex; gap: 20px; align-items: center; flex-wrap: wrap; }
+.gen-result .gen-qr { background: var(--white); padding: 10px; border-radius: 10px; flex-shrink: 0; }
+.gen-result .gen-info { flex: 1; min-width: 200px; }
+.gen-result .gen-info .name { font-family: 'Cinzel', serif; font-size: 1.05rem; color: var(--gold-light); }
+.gen-result .gen-link { font-size: 0.74rem; word-break: break-all; background: rgba(255,255,255,0.08); padding: 8px 10px; border-radius: 8px; margin: 8px 0; }
+.gen-result .gen-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.gen-result .gen-actions button, .gen-result .gen-actions a {
+  padding: 8px 14px; border-radius: 999px; border: 1px solid rgba(255,235,124,0.4); background: transparent;
+  color: var(--gold-light); font-size: 0.8rem; cursor: pointer; font-family: inherit; text-decoration: none; display: inline-block;
+}
+
+.filter-bar { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+.filter-btn {
+  padding: 7px 14px; border-radius: 999px; border: 1px solid var(--cream-dark); background: var(--white);
+  color: var(--ink-soft); font-size: 0.8rem; cursor: pointer; font-family: inherit;
+}
+.filter-btn.active { background: var(--plum-soft); border-color: var(--plum-soft); color: var(--white); }
+
+table.guest-table { width: 100%; border-collapse: collapse; }
+table.guest-table th {
+  text-align: left; font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-soft);
+  padding: 10px 12px; border-bottom: 2px solid var(--cream-dark);
+}
+table.guest-table td { padding: 12px; border-bottom: 1px solid var(--cream-dark); font-size: 0.92rem; vertical-align: middle; }
+table.guest-table tr:last-child td { border-bottom: none; }
+.badge { display: inline-block; padding: 4px 11px; border-radius: 999px; font-size: 0.76rem; white-space: nowrap; }
+.badge.yes { background: rgba(61,90,26,0.14); color: var(--green); }
+.badge.no { background: rgba(160,64,48,0.12); color: var(--red); }
+.badge.pending { background: rgba(166,124,51,0.14); color: var(--gold-dark); }
+.row-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+.mini-btn {
+  font-size: 0.72rem; padding: 5px 10px; border-radius: 999px; border: 1px solid var(--cream-dark);
+  background: var(--white); color: var(--ink-soft); cursor: pointer; font-family: inherit;
+}
+.mini-btn.danger { border-color: rgba(160,64,48,0.3); color: var(--red); }
+.empty-state { text-align: center; color: var(--ink-soft); padding: 30px 10px; font-size: 0.92rem; }
+
+.dash-actions { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
+.dash-actions button {
+  padding: 9px 16px; border-radius: 9px; border: 1.4px solid var(--gold); background: var(--white);
+  color: var(--gold-dark); font-size: 0.85rem; cursor: pointer; font-family: inherit;
+}
+.dash-actions button.primary { background: var(--plum-soft); border-color: var(--plum-soft); color: var(--white); }
+
+.table-select {
+  padding: 6px 8px; border-radius: 8px; border: 1px solid var(--cream-dark); font-family: inherit; font-size: 0.8rem; background: var(--white);
+}
+.photo-mod-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; }
+.photo-mod-item { position: relative; border-radius: 10px; overflow: hidden; background: var(--white); }
+.photo-mod-item img, .photo-mod-item video { width: 100%; height: 140px; object-fit: cover; display: block; background: #000; }
+.photo-mod-item .photo-caption { font-size: 0.68rem; color: var(--ink-soft); padding: 6px 8px; }
+.photo-mod-item .photo-del {
+  position: absolute; top: 6px; right: 6px; background: rgba(74,15,28,0.8); color: var(--white);
+  border: none; border-radius: 999px; width: 24px; height: 24px; cursor: pointer; font-size: 0.8rem; line-height: 1;
+}
+
+@media (max-width: 700px) {
+  table.guest-table thead { display: none; }
+  table.guest-table, table.guest-table tbody, table.guest-table tr, table.guest-table td { display: block; width: 100%; }
+  table.guest-table tr { border-bottom: 1px solid var(--cream-dark); padding: 10px 0; }
+  table.guest-table td { border: none; padding: 4px 0; }
+  table.guest-table td::before { content: attr(data-label); display: block; font-size: 0.68rem; text-transform: uppercase; color: var(--ink-soft); }
+}
+</style>
+</head>
+<body>
+
+<div id="login-screen">
+  <div class="login-card">
+    <div class="crown">💍</div>
+    <h1>Panel de Yasmin &amp; Edgar</h1>
+    <p>Ingresa la contraseña de tu panel para ver y administrar tus invitaciones.</p>
+    <input type="password" id="login-password" placeholder="Contraseña" onkeydown="if(event.key==='Enter') doLogin()" />
+    <button onclick="doLogin()">Entrar</button>
+    <div class="error" id="login-error"></div>
+  </div>
+</div>
+
+<div id="dashboard">
+  <div class="dash-header">
+    <div class="title-block">
+      <span class="eyebrow">Panel privado</span>
+      <h1>Nuestra boda — Yasmin &amp; Edgar</h1>
+    </div>
+    <button class="logout-btn" onclick="doLogout()">Cerrar sesión</button>
+  </div>
+
+  <div class="dash-panel">
+    <h2>➕ Crear invitación personalizada</h2>
+    <div class="create-form">
+      <div>
+        <label>Nombre del invitado</label>
+        <input type="text" id="guest-name" placeholder="Ej. Karla Torres" />
+      </div>
+      <div>
+        <label>Número de pases</label>
+        <input type="number" id="guest-passes" value="2" min="1" max="10" />
+      </div>
+      <button onclick="createGuest()">✨ Generar invitación</button>
+    </div>
+    <div class="gen-result" id="gen-result"></div>
+  </div>
+
+  <div class="dash-panel">
+    <h2>📊 Resumen</h2>
+    <div class="stats-grid">
+      <div class="stat-card"><strong id="st-confirmed">--</strong><span>Confirmaron</span></div>
+      <div class="stat-card"><strong id="st-people">--</strong><span>Personas en total</span></div>
+      <div class="stat-card"><strong id="st-pending">--</strong><span>Pendientes</span></div>
+      <div class="stat-card"><strong id="st-declined">--</strong><span>No podrán ir</span></div>
+      <div class="stat-card"><strong id="st-passes">--</strong><span>Pases emitidos</span></div>
+    </div>
+  </div>
+
+  <div class="dash-panel">
+    <h2>🍽️ Gestión de mesas</h2>
+    <div class="create-form">
+      <div>
+        <label>Nombre de la mesa</label>
+        <input type="text" id="table-name" placeholder="Ej. Mesa 1 / Familia Sánchez" />
+      </div>
+      <div>
+        <label>Capacidad</label>
+        <input type="number" id="table-capacity" value="8" min="1" max="30" />
+      </div>
+      <button onclick="createTable()">➕ Crear mesa</button>
+    </div>
+    <table class="guest-table" style="margin-top:18px;">
+      <thead><tr><th>Mesa</th><th>Capacidad</th><th>Confirmados asignados</th><th>Acciones</th></tr></thead>
+      <tbody id="table-tbody"></tbody>
+    </table>
+    <div class="empty-state" id="table-empty" style="display:none;">Aún no has creado mesas.</div>
+  </div>
+
+  <div class="dash-panel">
+    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:16px;">
+      <h2 style="margin-bottom:0;">👥 Mis invitados</h2>
+      <div class="dash-actions" style="margin-bottom:0;">
+        <button class="primary" onclick="loadAll()">🔄 Actualizar</button>
+        <button onclick="exportCSV()">⬇️ Exportar CSV</button>
+      </div>
+    </div>
+    <div class="filter-bar">
+      <button class="filter-btn active" data-filter="all" onclick="setFilter('all')">Todos</button>
+      <button class="filter-btn" data-filter="yes" onclick="setFilter('yes')">✅ Confirmados</button>
+      <button class="filter-btn" data-filter="pending" onclick="setFilter('pending')">⏳ Pendientes</button>
+      <button class="filter-btn" data-filter="no" onclick="setFilter('no')">❌ No van</button>
+    </div>
+    <table class="guest-table">
+      <thead>
+        <tr><th>Invitado</th><th>Pases</th><th>Estatus</th><th>Mesa</th><th>Acciones</th></tr>
+      </thead>
+      <tbody id="guest-tbody"></tbody>
+    </table>
+    <div class="empty-state" id="guest-empty" style="display:none;">Aún no has agregado invitados. Usa el formulario de arriba.</div>
+  </div>
+
+  <div class="dash-panel">
+    <h2>🌐 Confirmaciones del enlace general</h2>
+    <p style="font-size:0.85rem; color:var(--ink-soft); margin-bottom:14px;">Respuestas de personas que entraron sin un link personalizado.</p>
+    <table class="guest-table">
+      <thead>
+        <tr><th>Nombre</th><th>Personas</th><th>Estatus</th><th>Fecha</th></tr>
+      </thead>
+      <tbody id="anon-tbody"></tbody>
+    </table>
+    <div class="empty-state" id="anon-empty" style="display:none;">Nadie ha confirmado por el enlace público todavía.</div>
+  </div>
+
+  <div class="dash-panel">
+    <h2>💌 Libro de firmas</h2>
+    <p style="font-size:0.85rem; color:var(--ink-soft); margin-bottom:14px;">Mensajes que los invitados han dejado en la invitación. Puedes borrar los que no quieras conservar.</p>
+    <table class="guest-table">
+      <thead><tr><th>Nombre</th><th>Mensaje</th><th>Fecha</th><th>Acciones</th></tr></thead>
+      <tbody id="gb-tbody"></tbody>
+    </table>
+    <div class="empty-state" id="gb-empty" style="display:none;">Nadie ha firmado el libro todavía.</div>
+  </div>
+
+  <div class="dash-panel">
+    <h2>📷 Fotos compartidas por invitados</h2>
+    <p style="font-size:0.85rem; color:var(--ink-soft); margin-bottom:14px;">Fotos que los invitados suben desde la invitación. Puedes eliminar cualquiera que no quieras conservar.</p>
+    <div class="photo-mod-grid" id="photo-mod-grid"></div>
+    <div class="empty-state" id="photo-empty" style="display:none;">Todavía no hay fotos compartidas.</div>
+  </div>
+</div>
+
+<script>
+const TOKEN_KEY = 'yasmin_edgar_admin_token';
+let currentFilter = 'all';
+let lastGuests = [];
+let lastAnon = [];
+let lastTables = [];
+let lastGuestbook = [];
+let lastPhotos = [];
+
+function getToken() { return localStorage.getItem(TOKEN_KEY); }
+function setToken(pw) { localStorage.setItem(TOKEN_KEY, pw); }
+function clearToken() { localStorage.removeItem(TOKEN_KEY); }
+
+async function apiFetch(url, options = {}) {
+  const token = getToken();
+  const headers = Object.assign({ 'Content-Type': 'application/json' }, options.headers || {}, token ? { 'x-admin-password': token } : {});
+  const res = await fetch(url, Object.assign({}, options, { headers }));
+  if (res.status === 401) {
+    clearToken();
+    showLogin('Tu sesión expiró, vuelve a entrar con la contraseña.');
+    throw new Error('No autorizado');
+  }
+  return res;
+}
+
+function showLogin(errorMsg) {
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('dashboard').classList.remove('active');
+  document.getElementById('login-error').textContent = errorMsg || '';
+}
+function showDashboard() {
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('dashboard').classList.add('active');
+  loadAll();
+}
+
+async function doLogin() {
+  const pw = document.getElementById('login-password').value;
+  if (!pw) return;
+  try {
+    const res = await fetch('/api/admin/login', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ password: pw })
+    });
+    if (res.ok) { setToken(pw); showDashboard(); }
+    else document.getElementById('login-error').textContent = 'Contraseña incorrecta.';
+  } catch (e) {
+    document.getElementById('login-error').textContent = 'No se pudo conectar con el servidor.';
+  }
+}
+function doLogout() { clearToken(); showLogin(); }
+
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str == null ? '' : str;
+  return div.innerHTML;
+}
+function copyText(text) {
+  navigator.clipboard.writeText(text).then(() => alert('Enlace copiado ✅'), () => alert('No se pudo copiar.'));
+}
+
+async function createGuest() {
+  const nameEl = document.getElementById('guest-name');
+  const passesEl = document.getElementById('guest-passes');
+  const name = nameEl.value.trim();
+  const passes = Math.max(1, parseInt(passesEl.value, 10) || 1);
+  if (!name) { alert('Escribe el nombre del invitado.'); return; }
+  try {
+    const res = await apiFetch('/api/admin/guests', { method: 'POST', body: JSON.stringify({ name, passes }) });
+    const guest = await res.json();
+    const link = location.origin + '/?g=' + guest.id;
+    const waText = encodeURIComponent(`¡Hola ${name}! 💍 Aquí está tu invitación a nuestra boda. Tu pase es para ${passes} persona${passes > 1 ? 's' : ''}: ${link}`);
+    const box = document.getElementById('gen-result');
+    box.classList.add('show');
+    box.innerHTML = `
+      <div class="gen-qr" id="gen-qr"></div>
+      <div class="gen-info">
+        <div class="name">Invitación creada para ${escapeHtml(name)}</div>
+        <div class="gen-link">${link}</div>
+        <div class="gen-actions">
+          <button onclick="copyText('${link}')">📋 Copiar enlace</button>
+          <a href="https://wa.me/?text=${waText}" target="_blank" rel="noopener">💬 Enviar por WhatsApp</a>
+        </div>
+      </div>`;
+    new QRCode(document.getElementById('gen-qr'), { text: link, width: 110, height: 110, colorDark: '#4a0f1c', colorLight: '#fffdf8' });
+    nameEl.value = '';
+    passesEl.value = 2;
+    loadAll();
+  } catch (e) { /* ya se mostró el error */ }
+}
+
+async function deleteGuest(id) {
+  if (!confirm('¿Eliminar esta invitación? El enlace dejará de funcionar.')) return;
+  try {
+    await apiFetch('/api/admin/guests/' + id, { method: 'DELETE' });
+    loadAll();
+  } catch (e) {}
+}
+
+function setFilter(f) {
+  currentFilter = f;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.toggle('active', b.dataset.filter === f));
+  renderGuests();
+}
+
+function renderGuests() {
+  const tbody = document.getElementById('guest-tbody');
+  const empty = document.getElementById('guest-empty');
+  const filtered = currentFilter === 'all' ? lastGuests : lastGuests.filter(g => g.status === currentFilter);
+  if (filtered.length === 0) {
+    tbody.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+  tbody.innerHTML = filtered.map(g => {
+    const link = location.origin + '/?g=' + g.id;
+    const label = g.status === 'yes' ? `✅ Confirmó ${g.responded_count || g.passes}` : g.status === 'no' ? '❌ No va' : '⏳ Pendiente';
+    const cls = g.status === 'yes' ? 'yes' : g.status === 'no' ? 'no' : 'pending';
+    const tableOptions = ['<option value="">Sin mesa</option>']
+      .concat(lastTables.map(t => `<option value="${t.id}" ${g.table_id === t.id ? 'selected' : ''}>${escapeHtml(t.name)}</option>`))
+      .join('');
+    return `<tr>
+      <td data-label="Invitado">${escapeHtml(g.name)}</td>
+      <td data-label="Pases">${g.passes}</td>
+      <td data-label="Estatus"><span class="badge ${cls}">${label}</span></td>
+      <td data-label="Mesa">
+        <select class="table-select" onchange="assignTable('${g.id}', this.value)">${tableOptions}</select>
+      </td>
+      <td data-label="Acciones">
+        <div class="row-actions">
+          <button class="mini-btn" onclick="copyText('${link}')">Copiar link</button>
+          <a class="mini-btn" style="text-decoration:none;" href="https://wa.me/?text=${encodeURIComponent(link)}" target="_blank" rel="noopener">WhatsApp</a>
+          <button class="mini-btn danger" onclick="deleteGuest('${g.id}')">Eliminar</button>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+/* ---------------- MESAS ---------------- */
+async function createTable() {
+  const nameEl = document.getElementById('table-name');
+  const capEl = document.getElementById('table-capacity');
+  const name = nameEl.value.trim();
+  const capacity = Math.max(1, parseInt(capEl.value, 10) || 8);
+  if (!name) { alert('Escribe el nombre de la mesa.'); return; }
+  try {
+    await apiFetch('/api/admin/tables', { method: 'POST', body: JSON.stringify({ name, capacity }) });
+    nameEl.value = ''; capEl.value = 8;
+    loadAll();
+  } catch (e) {}
+}
+
+async function deleteTable(id) {
+  if (!confirm('¿Eliminar esta mesa? Los invitados asignados quedarán sin mesa.')) return;
+  try {
+    await apiFetch('/api/admin/tables/' + id, { method: 'DELETE' });
+    loadAll();
+  } catch (e) {}
+}
+
+async function assignTable(guestId, tableId) {
+  try {
+    await apiFetch(`/api/admin/guests/${guestId}/table`, {
+      method: 'PATCH', body: JSON.stringify({ table_id: tableId ? Number(tableId) : null })
+    });
+    loadAll();
+  } catch (e) {}
+}
+
+function renderTables() {
+  const tbody = document.getElementById('table-tbody');
+  const empty = document.getElementById('table-empty');
+  if (lastTables.length === 0) {
+    tbody.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+  tbody.innerHTML = lastTables.map(t => `<tr>
+    <td data-label="Mesa">${escapeHtml(t.name)}</td>
+    <td data-label="Capacidad">${t.capacity}</td>
+    <td data-label="Confirmados asignados">${t.seats_taken || 0} / ${t.capacity}</td>
+    <td data-label="Acciones"><button class="mini-btn danger" onclick="deleteTable(${t.id})">Eliminar</button></td>
+  </tr>`).join('');
+}
+
+/* ---------------- LIBRO DE FIRMAS (moderación) ---------------- */
+async function deleteGuestbookEntry(id) {
+  if (!confirm('¿Borrar este mensaje del libro de firmas?')) return;
+  try {
+    await apiFetch('/api/admin/guestbook/' + id, { method: 'DELETE' });
+    loadAll();
+  } catch (e) {}
+}
+
+function renderGuestbookAdmin() {
+  const tbody = document.getElementById('gb-tbody');
+  const empty = document.getElementById('gb-empty');
+  if (lastGuestbook.length === 0) {
+    tbody.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+  tbody.innerHTML = lastGuestbook.map(e => {
+    const date = new Date(e.created_at);
+    const dateStr = isNaN(date) ? '' : date.toLocaleString('es-MX', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' });
+    return `<tr>
+      <td data-label="Nombre">${escapeHtml(e.name)}</td>
+      <td data-label="Mensaje">${escapeHtml(e.message)}</td>
+      <td data-label="Fecha">${dateStr}</td>
+      <td data-label="Acciones"><button class="mini-btn danger" onclick="deleteGuestbookEntry(${e.id})">Eliminar</button></td>
+    </tr>`;
+  }).join('');
+}
+
+/* ---------------- FOTOS (moderación) ---------------- */
+async function deletePhoto(id) {
+  if (!confirm('¿Eliminar esta foto?')) return;
+  try {
+    await apiFetch('/api/admin/photos/' + id, { method: 'DELETE' });
+    loadAll();
+  } catch (e) {}
+}
+
+function renderPhotosAdmin() {
+  const grid = document.getElementById('photo-mod-grid');
+  const empty = document.getElementById('photo-empty');
+  if (lastPhotos.length === 0) {
+    grid.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+  grid.innerHTML = lastPhotos.map(p => {
+    const who = escapeHtml(p.guest_name || 'invitado');
+    const media = p.image_data.startsWith('data:video/')
+      ? `<video src="${p.image_data}" controls playsinline preload="metadata"></video>`
+      : `<img src="${p.image_data}" alt="Foto de ${who}" loading="lazy" />`;
+    return `<div class="photo-mod-item">
+      ${media}
+      <button class="photo-del" onclick="deletePhoto(${p.id})" title="Eliminar">✕</button>
+      <div class="photo-caption">${escapeHtml(p.guest_name || 'Anónimo')}</div>
+    </div>`;
+  }).join('');
+}
+
+function renderAnon() {
+  const tbody = document.getElementById('anon-tbody');
+  const empty = document.getElementById('anon-empty');
+  if (lastAnon.length === 0) {
+    tbody.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+  tbody.innerHTML = lastAnon.map(e => {
+    const date = new Date(e.created_at);
+    const dateStr = isNaN(date) ? '' : date.toLocaleString('es-MX', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' });
+    const cls = e.attending ? 'yes' : 'no';
+    return `<tr>
+      <td data-label="Nombre">${escapeHtml(e.name)}</td>
+      <td data-label="Personas">${e.attending ? e.count : 0}</td>
+      <td data-label="Estatus"><span class="badge ${cls}">${e.attending ? '✅ Confirmó' : '❌ No va'}</span></td>
+      <td data-label="Fecha">${dateStr}</td>
+    </tr>`;
+  }).join('');
+}
+
+async function loadAll() {
+  try {
+    const [statsRes, guestsRes, anonRes, tablesRes] = await Promise.all([
+      apiFetch('/api/admin/stats'),
+      apiFetch('/api/admin/guests'),
+      apiFetch('/api/admin/rsvp'),
+      apiFetch('/api/admin/tables')
+    ]);
+    const stats = await statsRes.json();
+    lastGuests = await guestsRes.json();
+    lastAnon = await anonRes.json();
+    lastTables = await tablesRes.json();
+
+    document.getElementById('st-confirmed').textContent = stats.confirmed;
+    document.getElementById('st-people').textContent = stats.people;
+    document.getElementById('st-pending').textContent = stats.pending;
+    document.getElementById('st-declined').textContent = stats.declined;
+    document.getElementById('st-passes').textContent = stats.passesIssued;
+
+    renderTables();
+    renderGuests();
+    renderAnon();
+
+    // Libro de firmas y fotos son endpoints públicos (solo borrar requiere contraseña)
+    const [gbRes, photosRes] = await Promise.all([fetch('/api/guestbook'), fetch('/api/photos')]);
+    lastGuestbook = await gbRes.json();
+    lastPhotos = await photosRes.json();
+    renderGuestbookAdmin();
+    renderPhotosAdmin();
+  } catch (e) { /* el error ya se maneja en apiFetch */ }
+}
+
+function exportCSV() {
+  const rows = [['Nombre', 'Estatus', 'Personas confirmadas', 'Pases asignados', 'Origen']];
+  lastGuests.forEach(g => rows.push([g.name, g.status, g.responded_count || 0, g.passes, 'Personalizado']));
+  lastAnon.forEach(e => rows.push([e.name, e.attending ? 'yes' : 'no', e.attending ? e.count : 0, '', 'Enlace general']));
+  if (rows.length === 1) { alert('No hay datos para exportar todavía.'); return; }
+  const csv = rows.map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(',')).join('\n');
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'invitados-yasmin-edgar.csv'; a.click();
+  URL.revokeObjectURL(url);
+}
+
+/* ---------------- Arranque ---------------- */
+(async function init() {
+  const token = getToken();
+  if (!token) { showLogin(); return; }
+  try {
+    const res = await fetch('/api/admin/stats', { headers: { 'x-admin-password': token } });
+    if (res.ok) showDashboard();
+    else { clearToken(); showLogin(); }
+  } catch (e) { showLogin('No se pudo conectar con el servidor.'); }
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,22 @@
+databases:
+  - name: yasmin-edgar-db
+    plan: free
+    databaseName: yasminedgar
+    user: yasminedgar
+
+services:
+  - type: web
+    name: yasmin-edgar-boda
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: yasmin-edgar-db
+          property: connectionString
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: NODE_ENV
+        value: production
