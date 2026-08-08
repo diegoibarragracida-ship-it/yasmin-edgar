@@ -76,13 +76,13 @@ app.post('/api/rsvp', async (req, res) => {
 /* ---------- RUTAS DEL PANEL (protegidas con contraseña) ---------- */
 
 app.post('/api/admin/guests', requireAdmin, async (req, res) => {
-  const { name, passes } = req.body || {};
+  const { name, passes, table_id } = req.body || {};
   if (!name) return res.status(400).json({ error: 'Falta el nombre' });
   const passCount = Math.max(1, parseInt(passes, 10) || 1);
   const id = slugify(name) + '-' + crypto.randomBytes(3).toString('hex');
   const { rows } = await pool.query(
-    `INSERT INTO guests (id, name, passes) VALUES ($1, $2, $3) RETURNING *`,
-    [id, name, passCount]
+    `INSERT INTO guests (id, name, passes, table_id) VALUES ($1, $2, $3, $4) RETURNING *`,
+    [id, name, passCount, table_id || null]
   );
   res.json(rows[0]);
 });

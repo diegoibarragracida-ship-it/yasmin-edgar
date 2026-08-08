@@ -66,12 +66,69 @@ h1, h2, h3 { font-family: 'Cinzel', serif; margin: 0; font-weight: 600; }
 }
 
 .dash-panel { background: var(--cream); border-radius: 18px; padding: 26px; margin-bottom: 22px; box-shadow: 0 12px 30px rgba(0,0,0,0.2); }
-.dash-panel h2 { color: var(--plum); font-size: 1.15rem; margin-bottom: 16px; }
+.dash-panel h2 { color: var(--plum); font-size: 1.15rem; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+.dash-panel .panel-sub { font-size: 0.85rem; color: var(--ink-soft); margin: -10px 0 18px; }
 
 .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 14px; }
-.stat-card { background: var(--white); border: 1px solid rgba(97,100,47,0.2); border-radius: 14px; padding: 18px; text-align: center; }
+.stat-card {
+  background: var(--white); border: 1px solid rgba(97,100,47,0.15); border-radius: 14px; padding: 18px;
+  text-align: center; border-top: 3px solid var(--gold); box-shadow: 0 4px 14px rgba(74,15,28,0.05);
+}
+.stat-card .stat-icon { font-size: 1.1rem; margin-bottom: 4px; display: block; }
 .stat-card strong { display: block; font-family: 'Cinzel', serif; font-size: 1.9rem; color: var(--plum); }
 .stat-card span { font-size: 0.74rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-soft); }
+
+/* ---------- MAPA DEL SALÓN ---------- */
+.venue-map { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; margin-top: 4px; }
+.table-card {
+  background: var(--white); border-radius: 16px; padding: 18px; box-shadow: 0 6px 18px rgba(74,15,28,0.08);
+  border: 1px solid rgba(97,100,47,0.12); display: flex; flex-direction: column; gap: 12px;
+}
+.table-card-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+.table-card-head h3 { font-family: 'Cinzel', serif; font-size: 1rem; color: var(--plum); }
+.table-card-head .table-del { background: none; border: none; color: var(--ink-soft); cursor: pointer; font-size: 0.9rem; padding: 2px 4px; }
+.table-card-head .table-del:hover { color: var(--red); }
+
+.seat-meter { display: flex; align-items: center; gap: 10px; }
+.seat-dots { display: flex; flex-wrap: wrap; gap: 4px; flex: 1; }
+.seat-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--cream-dark); flex-shrink: 0; }
+.seat-dot.filled { background: var(--olive-fill, #5c7a29); }
+.seat-dot.over { background: var(--red); }
+.seat-count { font-size: 0.76rem; color: var(--ink-soft); white-space: nowrap; font-weight: 600; }
+.seat-count.over { color: var(--red); }
+
+.table-guests { display: flex; flex-direction: column; gap: 6px; }
+.table-guest-chip {
+  display: flex; justify-content: space-between; align-items: center; gap: 8px;
+  background: var(--cream); border-radius: 9px; padding: 7px 10px; font-size: 0.82rem;
+}
+.table-guest-chip .tgc-name { color: var(--ink); }
+.table-guest-chip .tgc-meta { font-size: 0.7rem; color: var(--ink-soft); }
+.table-guest-chip button { background: none; border: none; color: var(--ink-soft); cursor: pointer; font-size: 0.85rem; }
+.table-guest-chip button:hover { color: var(--red); }
+.table-empty-note { font-size: 0.8rem; color: var(--ink-soft); font-style: italic; }
+
+.table-add-row { display: flex; gap: 6px; margin-top: 2px; }
+.table-add-row select {
+  flex: 1; padding: 8px 10px; border-radius: 8px; border: 1px solid var(--cream-dark); font-family: inherit; font-size: 0.82rem; background: var(--white);
+}
+.table-add-row button {
+  padding: 8px 12px; border-radius: 8px; border: none; background: var(--olive-btn, #5c7a29); color: var(--white);
+  font-size: 0.8rem; cursor: pointer; font-family: inherit; white-space: nowrap;
+}
+.table-add-row.new-guest { flex-wrap: wrap; }
+.table-add-row.new-guest input { flex: 1; min-width: 90px; padding: 8px 10px; border-radius: 8px; border: 1px solid var(--cream-dark); font-family: inherit; font-size: 0.82rem; }
+
+.unassigned-panel { border: 1.5px dashed var(--gold); background: rgba(201,151,63,0.06); }
+.unassigned-list { display: flex; flex-direction: column; gap: 8px; }
+.unassigned-row {
+  display: flex; justify-content: space-between; align-items: center; gap: 10px; background: var(--white);
+  border-radius: 10px; padding: 10px 12px; flex-wrap: wrap;
+}
+.unassigned-row .ur-name { font-size: 0.92rem; }
+.unassigned-row .ur-meta { font-size: 0.72rem; color: var(--ink-soft); }
+.unassigned-row .ur-assign { display: flex; gap: 6px; align-items: center; }
+.unassigned-row select { padding: 6px 8px; border-radius: 8px; border: 1px solid var(--cream-dark); font-family: inherit; font-size: 0.8rem; }
 
 .create-form { display: grid; grid-template-columns: 2fr 1fr auto; gap: 12px; align-items: end; }
 .create-form label { display: block; font-size: 0.76rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-soft); margin-bottom: 6px; }
@@ -191,16 +248,17 @@ table.guest-table tr:last-child td { border-bottom: none; }
   <div class="dash-panel">
     <h2>📊 Resumen</h2>
     <div class="stats-grid">
-      <div class="stat-card"><strong id="st-confirmed">--</strong><span>Confirmaron</span></div>
-      <div class="stat-card"><strong id="st-people">--</strong><span>Personas en total</span></div>
-      <div class="stat-card"><strong id="st-pending">--</strong><span>Pendientes</span></div>
-      <div class="stat-card"><strong id="st-declined">--</strong><span>No podrán ir</span></div>
-      <div class="stat-card"><strong id="st-passes">--</strong><span>Pases emitidos</span></div>
+      <div class="stat-card"><span class="stat-icon">✅</span><strong id="st-confirmed">--</strong><span>Confirmaron</span></div>
+      <div class="stat-card"><span class="stat-icon">👥</span><strong id="st-people">--</strong><span>Personas en total</span></div>
+      <div class="stat-card"><span class="stat-icon">⏳</span><strong id="st-pending">--</strong><span>Pendientes</span></div>
+      <div class="stat-card"><span class="stat-icon">❌</span><strong id="st-declined">--</strong><span>No podrán ir</span></div>
+      <div class="stat-card"><span class="stat-icon">🎟️</span><strong id="st-passes">--</strong><span>Pases emitidos</span></div>
     </div>
   </div>
 
   <div class="dash-panel">
-    <h2>🍽️ Gestión de mesas</h2>
+    <h2>🗺️ Mapa del salón</h2>
+    <p class="panel-sub">Crea tus mesas y agrega invitados directamente a cada una. Ve de un vistazo cuántos lugares le quedan libres a cada mesa.</p>
     <div class="create-form">
       <div>
         <label>Nombre de la mesa</label>
@@ -212,21 +270,26 @@ table.guest-table tr:last-child td { border-bottom: none; }
       </div>
       <button onclick="createTable()">➕ Crear mesa</button>
     </div>
-    <table class="guest-table" style="margin-top:18px;">
-      <thead><tr><th>Mesa</th><th>Capacidad</th><th>Confirmados asignados</th><th>Acciones</th></tr></thead>
-      <tbody id="table-tbody"></tbody>
-    </table>
-    <div class="empty-state" id="table-empty" style="display:none;">Aún no has creado mesas.</div>
+    <div class="venue-map" id="venue-map" style="margin-top:20px;"></div>
+    <div class="empty-state" id="table-empty" style="display:none;">Aún no has creado mesas. Crea la primera arriba.</div>
+  </div>
+
+  <div class="dash-panel unassigned-panel">
+    <h2>🪑 Invitados sin mesa asignada</h2>
+    <p class="panel-sub">Estos invitados ya confirmaron o están pendientes, pero todavía no tienen mesa.</p>
+    <div class="unassigned-list" id="unassigned-list"></div>
+    <div class="empty-state" id="unassigned-empty" style="display:none;">Todos tus invitados ya tienen mesa asignada 🎉</div>
   </div>
 
   <div class="dash-panel">
-    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:16px;">
-      <h2 style="margin-bottom:0;">👥 Mis invitados</h2>
+    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:6px;">
+      <h2 style="margin-bottom:0;">👥 Todos los invitados</h2>
       <div class="dash-actions" style="margin-bottom:0;">
         <button class="primary" onclick="loadAll()">🔄 Actualizar</button>
         <button onclick="exportCSV()">⬇️ Exportar CSV</button>
       </div>
     </div>
+    <p class="panel-sub">Vista completa para buscar, filtrar y exportar. Para asignar mesa, usa el Mapa del salón de arriba.</p>
     <div class="filter-bar">
       <button class="filter-btn active" data-filter="all" onclick="setFilter('all')">Todos</button>
       <button class="filter-btn" data-filter="yes" onclick="setFilter('yes')">✅ Confirmados</button>
@@ -390,16 +453,11 @@ function renderGuests() {
     const link = location.origin + '/?g=' + g.id;
     const label = g.status === 'yes' ? `✅ Confirmó ${g.responded_count || g.passes}` : g.status === 'no' ? '❌ No va' : '⏳ Pendiente';
     const cls = g.status === 'yes' ? 'yes' : g.status === 'no' ? 'no' : 'pending';
-    const tableOptions = ['<option value="">Sin mesa</option>']
-      .concat(lastTables.map(t => `<option value="${t.id}" ${g.table_id === t.id ? 'selected' : ''}>${escapeHtml(t.name)}</option>`))
-      .join('');
     return `<tr>
       <td data-label="Invitado">${escapeHtml(g.name)}</td>
       <td data-label="Pases">${g.passes}</td>
       <td data-label="Estatus"><span class="badge ${cls}">${label}</span></td>
-      <td data-label="Mesa">
-        <select class="table-select" onchange="assignTable('${g.id}', this.value)">${tableOptions}</select>
-      </td>
+      <td data-label="Mesa">${g.table_name ? escapeHtml(g.table_name) : '<span style="color:var(--ink-soft);">Sin mesa</span>'}</td>
       <td data-label="Acciones">
         <div class="row-actions">
           <button class="mini-btn" onclick="copyText('${link}')">Copiar link</button>
@@ -412,6 +470,111 @@ function renderGuests() {
 }
 
 /* ---------------- MESAS ---------------- */
+function renderVenueMap() {
+  const map = document.getElementById('venue-map');
+  const empty = document.getElementById('table-empty');
+  if (lastTables.length === 0) {
+    map.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+
+  map.innerHTML = lastTables.map(t => {
+    const guestsHere = lastGuests.filter(g => g.table_id === t.id);
+    const taken = Number(t.seats_taken || 0);
+    const capacity = Number(t.capacity);
+    const over = taken > capacity;
+
+    const dots = Array.from({ length: Math.max(capacity, taken) }, (_, i) => {
+      const cls = i < taken ? (over ? 'filled over' : 'filled') : '';
+      return `<span class="seat-dot ${cls}"></span>`;
+    }).join('');
+
+    const guestChips = guestsHere.length
+      ? guestsHere.map(g => {
+          const statusIcon = g.status === 'yes' ? '✅' : g.status === 'no' ? '❌' : '⏳';
+          return `<div class="table-guest-chip">
+            <div><div class="tgc-name">${statusIcon} ${escapeHtml(g.name)}</div><div class="tgc-meta">${g.passes} pase${g.passes > 1 ? 's' : ''}</div></div>
+            <button title="Quitar de la mesa" onclick="removeGuestFromTable('${g.id}')">✕</button>
+          </div>`;
+        }).join('')
+      : '<div class="table-empty-note">Todavía sin invitados aquí.</div>';
+
+    const unassignedOptions = lastGuests.filter(g => !g.table_id)
+      .map(g => `<option value="${g.id}">${escapeHtml(g.name)}</option>`).join('');
+
+    return `<div class="table-card">
+      <div class="table-card-head">
+        <h3>${escapeHtml(t.name)}</h3>
+        <button class="table-del" title="Eliminar mesa" onclick="deleteTable(${t.id})">🗑️</button>
+      </div>
+      <div class="seat-meter">
+        <div class="seat-dots">${dots}</div>
+        <div class="seat-count ${over ? 'over' : ''}">${taken}/${capacity}${over ? ' ⚠️' : ''}</div>
+      </div>
+      <div class="table-guests">${guestChips}</div>
+      ${unassignedOptions ? `
+      <div class="table-add-row">
+        <select id="assign-select-${t.id}"><option value="">Agregar invitado existente...</option>${unassignedOptions}</select>
+        <button onclick="addExistingGuestToTable(${t.id})">Agregar</button>
+      </div>` : ''}
+      <div class="table-add-row new-guest">
+        <input type="text" id="new-guest-name-${t.id}" placeholder="Nombre nuevo invitado" />
+        <input type="number" id="new-guest-passes-${t.id}" placeholder="Pases" value="2" min="1" max="10" style="max-width:70px;" />
+        <button onclick="addNewGuestToTable(${t.id})">➕ Crear y sentar</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderUnassigned() {
+  const list = document.getElementById('unassigned-list');
+  const empty = document.getElementById('unassigned-empty');
+  const unassigned = lastGuests.filter(g => !g.table_id);
+  if (unassigned.length === 0) {
+    list.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+  const tableOptions = lastTables.map(t => `<option value="${t.id}">${escapeHtml(t.name)}</option>`).join('');
+  list.innerHTML = unassigned.map(g => {
+    const statusIcon = g.status === 'yes' ? '✅' : g.status === 'no' ? '❌' : '⏳';
+    return `<div class="unassigned-row">
+      <div><div class="ur-name">${statusIcon} ${escapeHtml(g.name)}</div><div class="ur-meta">${g.passes} pase${g.passes > 1 ? 's' : ''}</div></div>
+      ${lastTables.length ? `
+      <div class="ur-assign">
+        <select id="ur-select-${g.id}"><option value="">Elegir mesa...</option>${tableOptions}</select>
+        <button class="mini-btn" onclick="assignTable('${g.id}', document.getElementById('ur-select-${g.id}').value)">Sentar</button>
+      </div>` : '<span class="ur-meta">Crea una mesa primero</span>'}
+    </div>`;
+  }).join('');
+}
+
+async function addExistingGuestToTable(tableId) {
+  const select = document.getElementById('assign-select-' + tableId);
+  const guestId = select.value;
+  if (!guestId) return;
+  await assignTable(guestId, tableId);
+}
+
+async function addNewGuestToTable(tableId) {
+  const nameEl = document.getElementById('new-guest-name-' + tableId);
+  const passesEl = document.getElementById('new-guest-passes-' + tableId);
+  const name = nameEl.value.trim();
+  const passes = Math.max(1, parseInt(passesEl.value, 10) || 1);
+  if (!name) { alert('Escribe el nombre del invitado.'); return; }
+  try {
+    await apiFetch('/api/admin/guests', { method: 'POST', body: JSON.stringify({ name, passes, table_id: tableId }) });
+    loadAll();
+  } catch (e) {}
+}
+
+async function removeGuestFromTable(guestId) {
+  await assignTable(guestId, '');
+}
+
 async function createTable() {
   const nameEl = document.getElementById('table-name');
   const capEl = document.getElementById('table-capacity');
@@ -440,26 +603,6 @@ async function assignTable(guestId, tableId) {
     });
     loadAll();
   } catch (e) {}
-}
-
-function renderTables() {
-  const tbody = document.getElementById('table-tbody');
-  const empty = document.getElementById('table-empty');
-  if (lastTables.length === 0) {
-    tbody.innerHTML = '';
-    empty.style.display = 'block';
-    return;
-  }
-  empty.style.display = 'none';
-  tbody.innerHTML = lastTables.map(t => {
-    const over = Number(t.seats_taken || 0) > Number(t.capacity);
-    return `<tr>
-    <td data-label="Mesa">${escapeHtml(t.name)}</td>
-    <td data-label="Capacidad">${t.capacity}</td>
-    <td data-label="Confirmados asignados"><span style="${over ? 'color:var(--red); font-weight:600;' : ''}">${t.seats_taken || 0} / ${t.capacity}${over ? ' ⚠️' : ''}</span></td>
-    <td data-label="Acciones"><button class="mini-btn danger" onclick="deleteTable(${t.id})">Eliminar</button></td>
-  </tr>`;
-  }).join('');
 }
 
 /* ---------------- LIBRO DE FIRMAS (moderación) ---------------- */
@@ -564,7 +707,8 @@ async function loadAll() {
     document.getElementById('st-declined').textContent = stats.declined;
     document.getElementById('st-passes').textContent = stats.passesIssued;
 
-    renderTables();
+    renderVenueMap();
+    renderUnassigned();
     renderGuests();
     renderAnon();
 
