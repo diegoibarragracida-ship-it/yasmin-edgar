@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Álbum de firmas y fotos · Yasmin &amp; Edgar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Parisienne&family=Cinzel:wght@500;600;700&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --night: #4a0f1c;
+  --night-deep: #2c0810;
+  --plum: #8a1538;
+  --plum-soft: #a01d41;
+  --burgundy-bright: #c41e4f;
+  --cream: #f8f1e2;
+  --cream-dark: #e6dcb8;
+  --ink: #2b2a1c;
+  --ink-soft: #6e6b52;
+  --gold: #c9973f;
+  --gold-dark: #a3721f;
+  --gold-light: #f2d78c;
+  --gold-shine: linear-gradient(120deg, #a3721f, #f2d78c 45%, #c9973f 65%, #f2d78c 90%);
+  --white: #fffdf8;
+  --olive: #5c7a29;
+  --olive-deep: #33430f;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  background:
+    radial-gradient(ellipse at 20% 0%, rgba(196,30,79,0.20), transparent 55%),
+    radial-gradient(ellipse at 85% 100%, rgba(201,151,63,0.16), transparent 50%),
+    linear-gradient(160deg, var(--olive-deep), #202a0d 70%);
+  color: var(--ink); min-height: 100vh; display: flex; justify-content: center;
+}
+h1,h2,h3 { font-family: 'Cinzel', serif; margin: 0; font-weight: 600; letter-spacing: 0.02em; }
+.script { font-family: 'Parisienne', cursive; }
+.card { width: 100%; max-width: 500px; background: var(--cream); min-height: 100vh; }
+
+.top-nav {
+  position: sticky; top: 0; z-index: 20; background: rgba(248,241,226,0.96); backdrop-filter: blur(6px);
+  border-bottom: 1px solid var(--cream-dark); padding: 14px 20px; display: flex; align-items: center; gap: 10px;
+}
+.top-nav a { color: var(--plum); text-decoration: none; font-size: 1.3rem; }
+.top-nav h1 { font-size: 1.05rem; color: var(--plum); }
+
+.hero {
+  padding: 34px 26px 26px; text-align: center; color: var(--white);
+  background: linear-gradient(160deg, var(--night), var(--night-deep) 80%);
+}
+.hero .script { font-size: 2.4rem; color: var(--gold-light); text-shadow: 0 0 20px rgba(242,215,140,0.4); }
+.hero p { margin-top: 8px; font-size: 0.92rem; color: rgba(248,241,226,0.85); }
+
+.tabs { display: flex; position: sticky; top: 53px; z-index: 19; background: var(--cream); border-bottom: 1px solid var(--cream-dark); }
+.tab-btn {
+  flex: 1; padding: 13px 8px; text-align: center; background: none; border: none; cursor: pointer;
+  font-family: 'Cinzel', serif; font-size: 0.78rem; letter-spacing: 0.06em; color: var(--ink-soft);
+  border-bottom: 3px solid transparent;
+}
+.tab-btn.active { color: var(--plum); border-bottom-color: var(--gold); }
+
+.section-block { padding: 26px 22px 40px; display: none; }
+.section-block.active { display: block; }
+.section-block .eyebrow { display: block; text-align: center; font-style: italic; letter-spacing: 0.18em; text-transform: uppercase; font-size: 0.7rem; color: var(--gold-dark); margin-bottom: 6px; }
+.section-block h2 { text-align: center; font-size: 1.25rem; color: var(--plum); margin-bottom: 4px; }
+.section-block .sub { text-align: center; font-size: 0.85rem; color: var(--ink-soft); margin-top: 6px; }
+
+/* --- Formulario firmas --- */
+.gb-form, .up-form {
+  margin-top: 20px; background: var(--white); border: 1px solid var(--cream-dark); border-radius: 16px; padding: 18px;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.gb-form input, .gb-form textarea, .up-form input[type="text"] {
+  padding: 10px 12px; border-radius: 9px; border: 1px solid var(--cream-dark); font-family: inherit; font-size: 0.92rem; background: var(--cream);
+}
+.gb-form textarea { resize: vertical; min-height: 70px; }
+.btn-gold {
+  padding: 12px 18px; border-radius: 999px; border: none; background: var(--gold-shine);
+  color: var(--night-deep); font-family: 'Cinzel', serif; font-size: 0.82rem; letter-spacing: 0.04em; cursor: pointer;
+}
+.btn-gold:disabled { opacity: 0.6; cursor: default; }
+.form-msg { text-align: center; font-size: 0.82rem; min-height: 1.1em; }
+.form-msg.ok { color: var(--olive); }
+.form-msg.err { color: var(--plum-soft); }
+
+/* --- Muro de mensajes --- */
+.gb-wall { margin-top: 22px; display: flex; flex-direction: column; gap: 12px; }
+.gb-note {
+  background: var(--white); border: 1px solid var(--cream-dark); border-left: 4px solid var(--gold);
+  border-radius: 4px 14px 14px 4px; padding: 14px 16px;
+}
+.gb-note .gbn-name { font-family: 'Cinzel', serif; font-size: 0.85rem; color: var(--plum); }
+.gb-note .gbn-msg { font-size: 0.92rem; color: var(--ink); margin-top: 4px; line-height: 1.5; }
+.gb-note .gbn-date { font-size: 0.7rem; color: var(--ink-soft); margin-top: 6px; }
+.empty-msg { text-align: center; color: var(--ink-soft); font-style: italic; padding: 30px 0; font-size: 0.9rem; }
+
+/* --- Subida y galería de fotos --- */
+.up-dropzone {
+  border: 2px dashed var(--gold); border-radius: 14px; padding: 22px; text-align: center;
+  color: var(--gold-dark); font-size: 0.88rem; cursor: pointer; background: rgba(201,151,63,0.06);
+}
+.up-dropzone input { display: none; }
+.up-preview { margin-top: 10px; display: none; }
+.up-preview.show { display: block; }
+.up-preview img { width: 100%; max-height: 220px; object-fit: cover; border-radius: 12px; }
+
+.photo-grid { margin-top: 22px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.photo-card { position: relative; border-radius: 12px; overflow: hidden; background: var(--white); border: 1px solid var(--cream-dark); }
+.photo-card img { width: 100%; height: 150px; object-fit: cover; display: block; cursor: pointer; }
+.photo-card .pc-cap { padding: 8px 10px; font-size: 0.76rem; color: var(--ink-soft); }
+.photo-card .pc-name { font-weight: 600; color: var(--plum); }
+
+.lightbox {
+  position: fixed; inset: 0; background: rgba(20,6,10,0.92); z-index: 100; display: none;
+  align-items: center; justify-content: center; padding: 20px;
+}
+.lightbox.show { display: flex; }
+.lightbox img { max-width: 100%; max-height: 85vh; border-radius: 10px; }
+.lightbox .lb-close {
+  position: absolute; top: 18px; right: 22px; color: var(--gold-light); font-size: 2rem;
+  background: none; border: none; cursor: pointer; line-height: 1;
+}
+</style>
+</head>
+<body>
+
+<div class="card">
+  <div class="top-nav">
+    <a href="index.html" aria-label="Volver a la invitación">←</a>
+    <h1>Álbum de Yasmin &amp; Edgar</h1>
+  </div>
+
+  <div class="hero">
+    <div class="script">Firmas &amp; Recuerdos</div>
+    <p>Déjanos un mensaje y comparte tus fotos del gran día 💛</p>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" id="tab-firmas" onclick="showTab('firmas')">✍️ Libro de firmas</button>
+    <button class="tab-btn" id="tab-fotos" onclick="showTab('fotos')">📸 Fotos</button>
+  </div>
+
+  <!-- ================= LIBRO DE FIRMAS ================= -->
+  <div class="section-block active" id="panel-firmas">
+    <span class="eyebrow">Déjanos tu huella</span>
+    <h2>Libro de firmas</h2>
+    <p class="sub">Escribe unas palabras para Yasmin y Edgar — quedarán guardadas para siempre.</p>
+
+    <div class="gb-form">
+      <input type="text" id="gb-name" placeholder="Tu nombre" maxlength="100" />
+      <textarea id="gb-message" placeholder="Déjanos un mensaje..." maxlength="500"></textarea>
+      <button class="btn-gold" id="gb-submit" onclick="submitGuestbook()">Firmar el libro</button>
+      <div class="form-msg" id="gb-msg"></div>
+    </div>
+
+    <div class="gb-wall" id="gb-wall">
+      <div class="empty-msg">Cargando mensajes...</div>
+    </div>
+  </div>
+
+  <!-- ================= FOTOS ================= -->
+  <div class="section-block" id="panel-fotos">
+    <span class="eyebrow">Comparte el momento</span>
+    <h2>Fotos del evento</h2>
+    <p class="sub">Sube tus mejores tomas para que todos las tengamos en un solo lugar.</p>
+
+    <div class="up-form">
+      <label class="up-dropzone" id="up-dropzone">
+        📎 Toca para elegir una foto
+        <input type="file" id="up-file" accept="image/*" onchange="onFileSelected(event)" />
+      </label>
+      <div class="up-preview" id="up-preview"><img id="up-preview-img" alt="Vista previa" /></div>
+      <input type="text" id="up-name" placeholder="Tu nombre (opcional)" maxlength="100" />
+      <input type="text" id="up-caption" placeholder="Un comentario sobre la foto (opcional)" maxlength="200" />
+      <button class="btn-gold" id="up-submit" onclick="submitPhoto()" disabled>Subir foto</button>
+      <div class="form-msg" id="up-msg"></div>
+    </div>
+
+    <div class="photo-grid" id="photo-grid">
+      <div class="empty-msg" style="grid-column: span 2;">Cargando fotos...</div>
+    </div>
+  </div>
+</div>
+
+<div class="lightbox" id="lightbox" onclick="closeLightbox(event)">
+  <button class="lb-close" onclick="closeLightbox(event)">✕</button>
+  <img id="lightbox-img" alt="Foto ampliada" />
+</div>
+
+<script>
+const API = '';
+
+function showTab(tab) {
+  document.getElementById('panel-firmas').classList.toggle('active', tab === 'firmas');
+  document.getElementById('panel-fotos').classList.toggle('active', tab === 'fotos');
+  document.getElementById('tab-firmas').classList.toggle('active', tab === 'firmas');
+  document.getElementById('tab-fotos').classList.toggle('active', tab === 'fotos');
+}
+
+/* ---------------- LIBRO DE FIRMAS ---------------- */
+function timeAgo(dateStr) {
+  const diff = (Date.now() - new Date(dateStr).getTime()) / 1000;
+  if (diff < 60) return 'hace un momento';
+  if (diff < 3600) return `hace ${Math.floor(diff/60)} min`;
+  if (diff < 86400) return `hace ${Math.floor(diff/3600)} h`;
+  return new Date(dateStr).toLocaleDateString('es-MX', { day: 'numeric', month: 'short' });
+}
+
+async function loadGuestbook() {
+  const wall = document.getElementById('gb-wall');
+  try {
+    const res = await fetch(`${API}/api/guestbook`);
+    const entries = await res.json();
+    if (!entries.length) {
+      wall.innerHTML = '<div class="empty-msg">Sé el primero en firmar el libro 💛</div>';
+      return;
+    }
+    wall.innerHTML = entries.map(e => `
+      <div class="gb-note">
+        <div class="gbn-name">${escapeHtml(e.name)}</div>
+        <div class="gbn-msg">${escapeHtml(e.message)}</div>
+        <div class="gbn-date">${timeAgo(e.created_at)}</div>
+      </div>
+    `).join('');
+  } catch (err) {
+    wall.innerHTML = '<div class="empty-msg">No se pudieron cargar los mensajes.</div>';
+  }
+}
+
+async function submitGuestbook() {
+  const name = document.getElementById('gb-name').value.trim();
+  const message = document.getElementById('gb-message').value.trim();
+  const msg = document.getElementById('gb-msg');
+  const btn = document.getElementById('gb-submit');
+  if (!name || !message) {
+    msg.textContent = 'Escribe tu nombre y un mensaje.';
+    msg.className = 'form-msg err';
+    return;
+  }
+  btn.disabled = true;
+  try {
+    const res = await fetch(`${API}/api/guestbook`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, message })
+    });
+    if (!res.ok) throw new Error();
+    msg.textContent = '¡Gracias por tu mensaje! 💛';
+    msg.className = 'form-msg ok';
+    document.getElementById('gb-name').value = '';
+    document.getElementById('gb-message').value = '';
+    loadGuestbook();
+  } catch (err) {
+    msg.textContent = 'No se pudo guardar tu mensaje, intenta de nuevo.';
+    msg.className = 'form-msg err';
+  }
+  btn.disabled = false;
+}
+
+/* ---------------- FOTOS ---------------- */
+let selectedImageData = null;
+
+function onFileSelected(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const img = new Image();
+    img.onload = () => {
+      // Comprimimos/redimensionamos en el navegador antes de subir
+      const maxDim = 1600;
+      let { width, height } = img;
+      if (width > maxDim || height > maxDim) {
+        const ratio = Math.min(maxDim / width, maxDim / height);
+        width = Math.round(width * ratio);
+        height = Math.round(height * ratio);
+      }
+      const canvas = document.createElement('canvas');
+      canvas.width = width; canvas.height = height;
+      canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+      selectedImageData = canvas.toDataURL('image/jpeg', 0.82);
+      document.getElementById('up-preview-img').src = selectedImageData;
+      document.getElementById('up-preview').classList.add('show');
+      document.getElementById('up-submit').disabled = false;
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+async function submitPhoto() {
+  const msg = document.getElementById('up-msg');
+  const btn = document.getElementById('up-submit');
+  if (!selectedImageData) {
+    msg.textContent = 'Elige una foto primero.';
+    msg.className = 'form-msg err';
+    return;
+  }
+  btn.disabled = true;
+  try {
+    const res = await fetch(`${API}/api/photos`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        guest_name: document.getElementById('up-name').value.trim() || null,
+        caption: document.getElementById('up-caption').value.trim() || null,
+        image_data: selectedImageData
+      })
+    });
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}));
+      throw new Error(data.error || 'Error al subir');
+    }
+    msg.textContent = '¡Foto compartida! 📸';
+    msg.className = 'form-msg ok';
+    selectedImageData = null;
+    document.getElementById('up-file').value = '';
+    document.getElementById('up-name').value = '';
+    document.getElementById('up-caption').value = '';
+    document.getElementById('up-preview').classList.remove('show');
+    document.getElementById('up-submit').disabled = true;
+    loadPhotos();
+  } catch (err) {
+    msg.textContent = err.message || 'No se pudo subir la foto.';
+    msg.className = 'form-msg err';
+  }
+  btn.disabled = selectedImageData ? false : true;
+}
+
+async function loadPhotos() {
+  const grid = document.getElementById('photo-grid');
+  try {
+    const res = await fetch(`${API}/api/photos`);
+    const photos = await res.json();
+    if (!photos.length) {
+      grid.innerHTML = '<div class="empty-msg" style="grid-column: span 2;">Aún no hay fotos — ¡sube la primera! 📸</div>';
+      return;
+    }
+    grid.innerHTML = photos.map(p => `
+      <div class="photo-card">
+        <img src="${p.image_data}" alt="Foto compartida" onclick="openLightbox('${p.image_data.replace(/'/g, "\\'")}')" loading="lazy" />
+        ${(p.guest_name || p.caption) ? `<div class="pc-cap">${p.guest_name ? `<span class="pc-name">${escapeHtml(p.guest_name)}</span><br>` : ''}${p.caption ? escapeHtml(p.caption) : ''}</div>` : ''}
+      </div>
+    `).join('');
+  } catch (err) {
+    grid.innerHTML = '<div class="empty-msg" style="grid-column: span 2;">No se pudieron cargar las fotos.</div>';
+  }
+}
+
+function openLightbox(src) {
+  document.getElementById('lightbox-img').src = src;
+  document.getElementById('lightbox').classList.add('show');
+}
+function closeLightbox(e) {
+  document.getElementById('lightbox').classList.remove('show');
+}
+
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+loadGuestbook();
+loadPhotos();
+</script>
+</body>
+</html>

@@ -78,7 +78,7 @@ p { line-height: 1.65; margin: 0; }
 
 /* --- Video de apertura (7s) que se aleja y da paso a los nombres --- */
 .seal-overlay {
-  position: fixed; inset: 0; background: #14100c;
+  position: fixed; inset: 0; background: var(--night);
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   z-index: 50; transition: opacity 0.7s ease, visibility 0.7s ease; overflow: hidden;
 }
@@ -86,38 +86,41 @@ p { line-height: 1.65; margin: 0; }
 
 .intro-video-wrap {
   position: absolute; inset: 0; overflow: hidden;
-  display: flex; align-items: center; justify-content: center;
-  background: radial-gradient(ellipse at center, #3a2a16, #14100c 78%);
+  transition: transform 1.8s cubic-bezier(.22,.61,.36,1), border-radius 1.8s ease, box-shadow 1.8s ease;
 }
-.intro-video-wrap video {
-  width: 100%; height: 100%; object-fit: contain; display: block;
+.intro-video-wrap.zoomed {
+  transform: scale(0.74) translateY(-6%);
+  border-radius: 26px;
+  border: 4px solid var(--gold-light);
+  box-shadow: 0 25px 70px rgba(0,0,0,0.6), 0 0 0 1px rgba(242,215,140,0.4);
 }
-.intro-flash {
-  position: absolute; inset: 0; pointer-events: none; z-index: 1;
-  background: radial-gradient(circle at 50% 42%, rgba(255,244,214,0.95), rgba(242,215,140,0.35) 32%, transparent 62%);
-  opacity: 0;
-}
-.intro-video-wrap.zoomed .intro-flash { animation: intro-flash-glow 1.8s ease forwards; }
-@keyframes intro-flash-glow {
-  0% { opacity: 0; }
-  22% { opacity: 1; }
-  100% { opacity: 0.32; }
-}
+.intro-video-wrap video { width: 100%; height: 100%; object-fit: cover; display: block; }
 .intro-video-wrap::after {
   content: ""; position: absolute; inset: 0; pointer-events: none;
-  background: linear-gradient(180deg, transparent 45%, rgba(20,14,8,0.55) 100%);
-  opacity: 0; transition: opacity 1.2s ease;
+  background: linear-gradient(180deg, rgba(0,0,0,0), rgba(0,0,0,0.22) 100%);
 }
-.intro-video-wrap.zoomed::after { opacity: 1; }
-
 
 .intro-content {
-  position: relative; z-index: 2; text-align: center; padding: 0 30px;
-  opacity: 0; transform: translateY(18px);
+  position: absolute; left: 0; right: 0; bottom: 48px; z-index: 2; text-align: center; padding: 0 30px;
+  opacity: 0; transform: translateY(18px); display: flex; flex-direction: column; align-items: center;
   transition: opacity 1.1s ease 0.6s, transform 1.1s ease 0.6s;
 }
 .intro-content.show { opacity: 1; transform: translateY(0); }
 .intro-content .script { color: var(--gold-light); font-size: 2.1rem; text-shadow: 0 0 24px rgba(242,215,140,0.5); }
+.tap-pulse {
+  width: 54px; height: 54px; border-radius: 50%;
+  border: 2px solid rgba(255,255,255,0.85);
+  position: relative;
+  animation: tap-pulse-ring 1.8s ease-out infinite;
+}
+.tap-pulse::after {
+  content: ""; position: absolute; inset: 14px; border-radius: 50%; background: rgba(255,255,255,0.9);
+}
+@keyframes tap-pulse-ring {
+  0% { box-shadow: 0 0 0 0 rgba(255,255,255,0.5); transform: scale(0.9); }
+  70% { box-shadow: 0 0 0 16px rgba(255,255,255,0); transform: scale(1); }
+  100% { box-shadow: 0 0 0 0 rgba(255,255,255,0); transform: scale(0.9); }
+}
 .intro-btn {
   margin-top: 24px; display: inline-block; padding: 13px 30px; border-radius: 999px;
   background: var(--gold-shine); color: var(--night-deep); font-weight: 600; font-size: 0.9rem;
@@ -159,12 +162,6 @@ p { line-height: 1.65; margin: 0; }
 .gallery img { width: 100%; height: 150px; object-fit: cover; border-radius: 10px; border: 3px solid var(--white); box-shadow: 0 0 0 1.5px var(--gold), 0 8px 18px rgba(74,15,28,0.2); }
 .gallery img.tall { height: 100%; grid-row: span 2; }
 
-.story-video-wrap {
-  margin-top: 20px; border-radius: 14px; overflow: hidden; box-shadow: 0 10px 26px rgba(74,15,28,0.2);
-  border: 3px solid var(--white); outline: 1.5px solid var(--gold);
-}
-.story-video-wrap video { width: 100%; max-height: 420px; display: block; background: #000; }
-
 /* --- Padrinos --- */
 .padrinos-grid { margin-top: 22px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .padrino-card {
@@ -191,15 +188,17 @@ p { line-height: 1.65; margin: 0; }
   color: var(--gold-dark); background: rgba(201,151,63,0.14); padding: 6px 14px; border-radius: 999px;
 }
 
-.timeline { margin-top: 28px; display: flex; flex-direction: column; gap: 0; }
-.timeline-item { display: flex; gap: 18px; position: relative; padding-bottom: 26px; }
+/* --- Itinerario --- */
+.timeline { margin-top: 24px; display: flex; flex-direction: column; }
+.timeline-item { display: flex; gap: 16px; position: relative; padding-bottom: 24px; }
 .timeline-item:last-child { padding-bottom: 0; }
 .timeline-item .dotcol { display: flex; flex-direction: column; align-items: center; }
-.timeline-item .tdot { width: 12px; height: 12px; border-radius: 50%; background: var(--burgundy-bright); border: 2px solid var(--white); box-shadow: 0 0 0 2px var(--gold); flex-shrink: 0; }
-.timeline-item .tline { flex: 1; width: 1.5px; background: var(--cream-dark); margin-top: 4px; }
+.timeline-item .tdot { width: 11px; height: 11px; border-radius: 50%; background: var(--plum); border: 2px solid var(--white); box-shadow: 0 0 0 2px var(--plum); flex-shrink: 0; }
+.timeline-item .tline { flex: 1; width: 1.5px; background: rgba(92,122,41,0.3); margin-top: 4px; }
 .timeline-item:last-child .tline { display: none; }
-.timeline-item .ttime { font-family: 'Cinzel', serif; color: var(--olive-deep); font-size: 0.95rem; }
-.timeline-item .tlabel { font-size: 0.86rem; color: var(--ink-soft); margin-top: 2px; }
+.timeline-item .ttime { font-family: 'Cinzel', serif; color: var(--plum); font-size: 0.92rem; white-space: nowrap; }
+.timeline-item .tlabel { font-size: 0.9rem; color: var(--ink-soft); margin-top: 2px; }
+.timeline-item .tlabel b { color: var(--ink); font-weight: 600; }
 
 .dress-card { margin-top: 20px; text-align: center; }
 .dress-card h3 { color: var(--plum); font-size: 1.02rem; margin-bottom: 10px; }
@@ -298,7 +297,7 @@ p { line-height: 1.65; margin: 0; }
 }
 .upload-status { text-align: center; font-size: 0.82rem; color: var(--ink-soft); margin-top: 10px; min-height: 18px; }
 .shared-gallery { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 16px; }
-.shared-gallery img, .shared-gallery video { width: 100%; height: 100px; object-fit: cover; border-radius: 8px; border: 2px solid var(--white); box-shadow: 0 3px 10px rgba(74,15,28,0.15); background: #000; }
+.shared-gallery img { width: 100%; height: 100px; object-fit: cover; border-radius: 8px; border: 2px solid var(--white); box-shadow: 0 3px 10px rgba(74,15,28,0.15); }
 </style>
 </head>
 <body>
@@ -316,7 +315,6 @@ p { line-height: 1.65; margin: 0; }
       <source src="media/save-the-date-edgar-yasmin.mp4" type="video/mp4">
       <source src="https://videos.pexels.com/video-files/14268100/14268100-hd_1080_1920_24fps.mp4" type="video/mp4">
     </video>
-    <div class="intro-flash"></div>
   </div>
   <div class="intro-content" id="intro-content">
     <div class="script">Yasmin &amp; Edgar</div>
@@ -332,9 +330,7 @@ p { line-height: 1.65; margin: 0; }
     <a href="#lugar">📍 Lugar</a>
     <a href="#regalos">🎁 Mesa de regalos</a>
     <a href="#rsvp">✅ Confirmar</a>
-    <a href="#fotos">📷 Fotos</a>
-    <a href="#firmas">💌 Firmas</a>
-    <a href="#multimedia">🎥 Libro multimedia</a>
+    <a href="album.html">✍️📸 Álbum</a>
   </nav>
 
   <div class="inv-hero">
@@ -358,17 +354,6 @@ p { line-height: 1.65; margin: 0; }
       <img class="tall" src="fotos-boda/foto5-mesa-exterior.jpg" alt="Mesa larga exterior con mantel olivo y flores burgundy" loading="lazy" />
       <img src="fotos-boda/foto4-place-setting.jpg" alt="Montaje de mesa con velas, dalias burgundy y servilleta olivo" loading="lazy" />
       <img src="https://images.pexels.com/photos/28115373/pexels-photo-28115373.jpeg?auto=compress&cs=tinysrgb&w=500" alt="Ramo de rosas rojo burgundy" loading="lazy" />
-    </div>
-  </div>
-
-  <div class="section-block reveal" style="padding-top:0;" id="historia">
-    <span class="eyebrow">Cómo llegamos hasta aquí</span>
-    <h2>Nuestra historia</h2>
-    <p class="story-text">El video comienza solo en cuanto llegas aquí.</p>
-    <div class="story-video-wrap">
-      <video id="story-video" controls muted playsinline preload="metadata" poster="fotos-boda/foto5-mesa-exterior.jpg">
-        <source src="media/nuestra-historia.mp4" type="video/mp4">
-      </video>
     </div>
   </div>
 
@@ -406,48 +391,64 @@ p { line-height: 1.65; margin: 0; }
       <span class="tbd" id="fecha-detalle">23 de enero de 2027</span>
     </div>
     <div class="place-card" id="lugar">
-      <h3>⛪ Ceremonia religiosa</h3>
-      <p>1:00 PM</p>
-      <span class="tbd" id="lugar-detalle">Rectoría de la Divina Providencia</span>
+      <h3>⛪ Misa religiosa</h3>
+      <p>1:00 pm</p>
+      <span class="tbd">Rectoría de la Divina Providencia</span>
     </div>
     <div class="place-card">
-      <h3>🥂 Recepción y cóctel</h3>
-      <p>2:30 PM</p>
-      <span class="tbd">Akura</span>
+      <h3>🥂 Recepción y coctel</h3>
+      <p>A partir de las 2:30 pm</p>
+      <span class="tbd">AKURA</span>
     </div>
+  </div>
 
+  <div class="section-block reveal" style="padding-top:0;">
+    <span class="eyebrow">Para que no te pierdas nada</span>
+    <h2>Itinerario del día</h2>
     <div class="timeline">
       <div class="timeline-item">
         <div class="dotcol"><div class="tdot"></div><div class="tline"></div></div>
-        <div class="tcontent"><div class="ttime">1:00 PM</div><div class="tlabel">Ceremonia religiosa — Rectoría de la Divina Providencia</div></div>
+        <div class="tcontent"><div class="ttime">1:00 pm</div><div class="tlabel"><b>Misa religiosa</b><br>Rectoría de la Divina Providencia</div></div>
       </div>
       <div class="timeline-item">
         <div class="dotcol"><div class="tdot"></div><div class="tline"></div></div>
-        <div class="tcontent"><div class="ttime">2:30 PM</div><div class="tlabel">Recepción y cóctel — Akura</div></div>
+        <div class="tcontent"><div class="ttime">2:30 pm</div><div class="tlabel"><b>Recepción y coctel</b><br>AKURA</div></div>
       </div>
       <div class="timeline-item">
         <div class="dotcol"><div class="tdot"></div><div class="tline"></div></div>
-        <div class="tcontent"><div class="ttime">3:30 PM</div><div class="tlabel">Ceremonia civil</div></div>
+        <div class="tcontent"><div class="ttime">4:00 pm</div><div class="tlabel">Acomodo de invitados</div></div>
       </div>
       <div class="timeline-item">
         <div class="dotcol"><div class="tdot"></div><div class="tline"></div></div>
-        <div class="tcontent"><div class="ttime">4:30 PM</div><div class="tlabel">Entrada de los novios</div></div>
+        <div class="tcontent"><div class="ttime">4:30 pm</div><div class="tlabel"><b>Entrada de los novios</b></div></div>
       </div>
       <div class="timeline-item">
         <div class="dotcol"><div class="tdot"></div><div class="tline"></div></div>
-        <div class="tcontent"><div class="ttime">4:40 PM</div><div class="tlabel">Banquete</div></div>
+        <div class="tcontent"><div class="ttime">4:35 pm</div><div class="tlabel">Brindis</div></div>
       </div>
       <div class="timeline-item">
         <div class="dotcol"><div class="tdot"></div><div class="tline"></div></div>
-        <div class="tcontent"><div class="ttime">6:00 PM</div><div class="tlabel">Vals</div></div>
+        <div class="tcontent"><div class="ttime">4:40 pm</div><div class="tlabel">Banquete</div></div>
       </div>
       <div class="timeline-item">
         <div class="dotcol"><div class="tdot"></div><div class="tline"></div></div>
-        <div class="tcontent"><div class="ttime">6:05 PM</div><div class="tlabel">Open party 🎉</div></div>
+        <div class="tcontent"><div class="ttime">5:45 pm</div><div class="tlabel">Vals</div></div>
+      </div>
+      <div class="timeline-item">
+        <div class="dotcol"><div class="tdot"></div><div class="tline"></div></div>
+        <div class="tcontent"><div class="ttime">6:05 pm</div><div class="tlabel"><b>Open Party</b> 🎉</div></div>
+      </div>
+      <div class="timeline-item">
+        <div class="dotcol"><div class="tdot"></div><div class="tline"></div></div>
+        <div class="tcontent"><div class="ttime">8:00 pm</div><div class="tlabel">Tradiciones — víbora de la mar, ramo y liguero</div></div>
+      </div>
+      <div class="timeline-item">
+        <div class="dotcol"><div class="tdot"></div><div class="tline"></div></div>
+        <div class="tcontent"><div class="ttime">9:00 pm</div><div class="tlabel">Carrito de esquites 🍜</div></div>
       </div>
       <div class="timeline-item">
         <div class="dotcol"><div class="tdot"></div></div>
-        <div class="tcontent"><div class="ttime">11:30 PM</div><div class="tlabel">Finaliza el evento</div></div>
+        <div class="tcontent"><div class="ttime">11:30 pm</div><div class="tlabel">Finaliza el evento</div></div>
       </div>
     </div>
   </div>
@@ -514,26 +515,11 @@ p { line-height: 1.65; margin: 0; }
     </div>
   </div>
 
-  <div class="section-block reveal" style="padding-top:0;" id="firmas">
-    <span class="eyebrow">Déjanos un mensaje</span>
-    <h2>Libro de firmas</h2>
-    <p class="story-text">Escríbenos algo bonito — quedará guardado para siempre.</p>
-    <div class="gb-form">
-      <input type="text" id="gb-name" placeholder="Tu nombre" />
-      <textarea id="gb-msg" rows="3" placeholder="Tu mensaje para Yasmin y Edgar..."></textarea>
-      <button class="gb-btn" onclick="submitGuestbook()">Firmar el libro</button>
-    </div>
-    <div class="gb-list" id="gb-list"><div class="gb-empty">Cargando mensajes...</div></div>
-  </div>
-
-  <div class="section-block reveal" style="padding-top:0;" id="fotos-compartidas">
+  <div class="section-block reveal" style="padding-top:0;">
     <span class="eyebrow">El momento es de todos</span>
-    <h2 id="multimedia">Libro multimedia</h2>
-    <p class="story-text">Sube las fotos y videos que tomes el día del evento para que quedemos con todos los recuerdos juntos en un solo lugar.</p>
-    <label class="upload-zone" for="photo-upload">📎 Toca para subir una foto o video</label>
-    <input type="file" id="photo-upload" accept="image/*,video/*" style="display:none" onchange="handlePhotoUpload(event)" />
-    <div class="upload-status" id="upload-status"></div>
-    <div class="shared-gallery" id="shared-gallery"></div>
+    <h2>Firmas y fotos</h2>
+    <p class="story-text">Déjanos un mensaje y comparte las fotos que tomes el día del evento — todo queda guardado en un solo lugar para siempre.</p>
+    <a href="album.html" style="display:block; text-align:center; margin-top:18px; padding:14px 20px; border-radius:999px; background:var(--gold-shine); color:var(--night-deep); font-family:'Cinzel',serif; font-size:0.85rem; letter-spacing:0.04em; text-decoration:none;">✍️📸 Abrir álbum de firmas y fotos</a>
   </div>
 
   <div class="inv-pass-wrap reveal">
@@ -573,49 +559,37 @@ function openInvitation() {
   document.getElementById('seal-overlay').classList.add('hidden');
   const video = document.getElementById('intro-video');
   if (video) video.pause();
+  if (!musicPlaying) toggleMusic();
 }
 
 function initIntro() {
+  const video = document.getElementById('intro-video');
   const videoWrap = document.getElementById('intro-video-wrap');
   const content = document.getElementById('intro-content');
-  const video = document.getElementById('intro-video');
-  let triggered = false;
-  function reveal() {
-    if (triggered) return;
-    triggered = true;
-    videoWrap.classList.add('zoomed');
-    content.classList.add('show');
-  }
   if (video) {
-    video.addEventListener('ended', reveal);
-    video.addEventListener('error', () => { console.error('Error cargando el video de intro'); reveal(); });
     video.play().catch(err => console.warn('Autoplay bloqueado:', err));
+    video.addEventListener('ended', () => {
+      // El video ya llegó a la toma del ramo y se queda congelado ahí
+      // (no loop, no se repite). Aquí se encoge de cerca a lejos y
+      // aparecen el nombre, la fecha y el botón, todo en el mismo momento.
+      videoWrap.classList.add('zoomed');
+      content.classList.add('show');
+    });
   }
-  // Red de seguridad: si el video falla o no dispara 'ended', igual mostramos
-  // los nombres y el botón después de un par de segundos.
-  setTimeout(reveal, 3000);
-
-  // La música arranca junto con el video, no hasta que abren la invitación.
+  // Intentamos arrancar la música desde que se abre el link.
+  // Si el navegador bloquea el autoplay con sonido, se activa
+  // en cuanto la persona toque la pantalla (ver openInvitation / tap-anywhere).
   const audio = document.getElementById('bgm');
   if (audio) {
     audio.play().then(() => {
       musicPlaying = true;
       document.getElementById('music-toggle').innerHTML = '🎵 Música';
     }).catch(() => {
-      // Algunos navegadores bloquean el audio con sonido hasta el primer toque:
-      // en cuanto el invitado toque la pantalla por primera vez, arrancamos la música.
-      const startOnFirstTouch = () => {
-        if (!musicPlaying) {
-          audio.play().then(() => {
-            musicPlaying = true;
-            document.getElementById('music-toggle').innerHTML = '🎵 Música';
-          }).catch(() => {});
-        }
-        document.removeEventListener('click', startOnFirstTouch);
-        document.removeEventListener('touchstart', startOnFirstTouch);
-      };
-      document.addEventListener('click', startOnFirstTouch, { once: true });
-      document.addEventListener('touchstart', startOnFirstTouch, { once: true });
+      // Autoplay con sonido bloqueado: se activará con el primer toque.
+      document.addEventListener('click', function startOnFirstTap() {
+        if (!musicPlaying) toggleMusic();
+        document.removeEventListener('click', startOnFirstTap);
+      }, { once: true });
     });
   }
 }
@@ -734,147 +708,6 @@ function copyClabe() {
   });
 }
 
-/* ---------------- LIBRO DE FIRMAS ---------------- */
-function escapeHtml(str) {
-  const div = document.createElement('div');
-  div.textContent = str == null ? '' : str;
-  return div.innerHTML;
-}
-
-async function loadGuestbook() {
-  const list = document.getElementById('gb-list');
-  try {
-    const res = await fetch('/api/guestbook');
-    const entries = await res.json();
-    if (!entries.length) {
-      list.innerHTML = '<div class="gb-empty">Sé el primero en firmar el libro 💌</div>';
-      return;
-    }
-    list.innerHTML = entries.map(e => {
-      const date = new Date(e.created_at);
-      const dateStr = isNaN(date) ? '' : date.toLocaleDateString('es-MX', { day: '2-digit', month: 'short' });
-      return `<div class="gb-entry"><b>${escapeHtml(e.name)}</b>: ${escapeHtml(e.message)}<span class="gb-date">${dateStr}</span></div>`;
-    }).join('');
-  } catch (err) {
-    list.innerHTML = '<div class="gb-empty">No se pudieron cargar los mensajes.</div>';
-  }
-}
-
-async function submitGuestbook() {
-  const nameEl = document.getElementById('gb-name');
-  const msgEl = document.getElementById('gb-msg');
-  const name = nameEl.value.trim();
-  const message = msgEl.value.trim();
-  if (!name || !message) { alert('Escribe tu nombre y un mensaje.'); return; }
-  try {
-    await fetch('/api/guestbook', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, message })
-    });
-    nameEl.value = ''; msgEl.value = '';
-    loadGuestbook();
-  } catch (err) {
-    alert('No se pudo guardar tu mensaje. Intenta de nuevo.');
-  }
-}
-
-/* ---------------- FOTOS COMPARTIDAS ---------------- */
-async function loadSharedGallery() {
-  const gallery = document.getElementById('shared-gallery');
-  try {
-    const res = await fetch('/api/photos');
-    const photos = await res.json();
-    gallery.innerHTML = photos.map(p => {
-      const who = escapeHtml(p.guest_name || 'un invitado');
-      if (p.image_data.startsWith('data:video/')) {
-        return `<video src="${p.image_data}" controls playsinline preload="metadata" aria-label="Video compartido por ${who}"></video>`;
-      }
-      return `<img src="${p.image_data}" alt="Foto compartida por ${who}" loading="lazy" />`;
-    }).join('');
-  } catch (err) {
-    gallery.innerHTML = '';
-  }
-}
-
-function handlePhotoUpload(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-  const statusEl = document.getElementById('upload-status');
-  event.target.value = '';
-
-  if (file.type.startsWith('video/')) {
-    const maxBytes = 5 * 1024 * 1024; // ~5MB crudos, para no pasar el límite del servidor en base64
-    if (file.size > maxBytes) {
-      statusEl.textContent = 'Ese video pesa mucho para subirlo aquí (máx. ~5MB). Prueba con uno más corto o comprimido.';
-      return;
-    }
-    statusEl.textContent = 'Subiendo video...';
-    const reader = new FileReader();
-    reader.onload = async (e) => {
-      try {
-        const res = await fetch('/api/photos', {
-          method: 'POST', headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ guest_name: currentGuest ? currentGuest.data.name : null, image_data: e.target.result })
-        });
-        if (!res.ok) throw new Error('upload failed');
-        statusEl.textContent = '¡Video subido! Gracias por compartirlo 💛';
-        loadSharedGallery();
-      } catch (err) {
-        statusEl.textContent = 'No se pudo subir el video. Intenta de nuevo.';
-      }
-    };
-    reader.readAsDataURL(file);
-    return;
-  }
-
-  statusEl.textContent = 'Subiendo foto...';
-  const img = new Image();
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    img.onload = async () => {
-      // Comprimimos en el navegador para no saturar la base de datos
-      const maxW = 1200;
-      const scale = Math.min(1, maxW / img.width);
-      const canvas = document.createElement('canvas');
-      canvas.width = img.width * scale;
-      canvas.height = img.height * scale;
-      canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
-      const dataUrl = canvas.toDataURL('image/jpeg', 0.75);
-
-      try {
-        const res = await fetch('/api/photos', {
-          method: 'POST', headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ guest_name: currentGuest ? currentGuest.data.name : null, image_data: dataUrl })
-        });
-        if (!res.ok) throw new Error('upload failed');
-        statusEl.textContent = '¡Foto subida! Gracias por compartirla 💛';
-        loadSharedGallery();
-      } catch (err) {
-        statusEl.textContent = 'No se pudo subir la foto. Intenta de nuevo.';
-      }
-    };
-    img.src = e.target.result;
-  };
-  reader.readAsDataURL(file);
-}
-
-/* ---------------- VIDEO "NUESTRA HISTORIA": play al llegar ---------------- */
-(function initStoryVideo() {
-  const storyVideo = document.getElementById('story-video');
-  if (!storyVideo || !('IntersectionObserver' in window)) return;
-  let played = false;
-  const obs = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting && !played) {
-        played = true;
-        storyVideo.play().catch(() => {});
-        obs.unobserve(storyVideo);
-      }
-    });
-  }, { threshold: 0.5 });
-  obs.observe(storyVideo);
-})();
-
 /* ---------------- REVEAL ON SCROLL ---------------- */
 const revealEls = document.querySelectorAll('.reveal');
 if ('IntersectionObserver' in window) {
@@ -887,8 +720,6 @@ if ('IntersectionObserver' in window) {
 }
 
 initGuestContext();
-loadGuestbook();
-loadSharedGallery();
 initIntro();
 </script>
 
