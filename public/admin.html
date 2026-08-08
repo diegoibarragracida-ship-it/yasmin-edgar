@@ -458,7 +458,8 @@ function renderTables() {
     <td data-label="Capacidad">${t.capacity}</td>
     <td data-label="Confirmados asignados"><span style="${over ? 'color:var(--red); font-weight:600;' : ''}">${t.seats_taken || 0} / ${t.capacity}${over ? ' ⚠️' : ''}</span></td>
     <td data-label="Acciones"><button class="mini-btn danger" onclick="deleteTable(${t.id})">Eliminar</button></td>
-  </tr>`).join('');
+  </tr>`;
+  }).join('');
 }
 
 /* ---------------- LIBRO DE FIRMAS (moderación) ---------------- */
