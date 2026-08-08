@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Parisienne&family=Cinzel:wght@500;600;700&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <style>
 :root {
   --night: #4a0f1c;
@@ -51,15 +52,14 @@ p { line-height: 1.65; margin: 0; }
 
 /* --- barra flotante superior (musica / idioma) --- */
 .top-bar-fixed {
-  position: fixed; top: 14px; left: 50%; transform: translateX(-50%);
-  width: 100%; max-width: 500px; display: flex; justify-content: flex-end;
-  padding: 0 16px; z-index: 40; pointer-events: none;
+  position: fixed; bottom: 18px; right: 18px; z-index: 40;
 }
 .float-btn {
-  pointer-events: auto; background: rgba(74,15,28,0.65); backdrop-filter: blur(6px);
+  pointer-events: auto; background: rgba(74,15,28,0.7); backdrop-filter: blur(6px);
   color: var(--gold-light); border: 1px solid rgba(242,215,140,0.4); border-radius: 999px;
-  padding: 8px 14px; font-size: 0.8rem; font-family: 'Cormorant Garamond', serif; cursor: pointer;
-  display: flex; align-items: center; gap: 6px;
+  width: 42px; height: 42px; font-size: 1.1rem; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.3);
 }
 
 /* --- nav de accesos rapidos (fecha, lugar, regalos, confirmar, fotos) --- */
@@ -297,14 +297,57 @@ p { line-height: 1.65; margin: 0; }
   color: var(--gold-dark); font-size: 0.86rem; background: var(--white); display: block; margin-top: 20px;
 }
 .upload-status { text-align: center; font-size: 0.82rem; color: var(--ink-soft); margin-top: 10px; min-height: 18px; }
-.shared-gallery { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 16px; }
-.shared-gallery img, .shared-gallery video { width: 100%; height: 100px; object-fit: cover; border-radius: 8px; border: 2px solid var(--white); box-shadow: 0 3px 10px rgba(74,15,28,0.15); background: #000; }
+
+.mm-file-preview { margin-top: 6px; }
+.mm-file-preview .mm-file-chip {
+  display: inline-flex; align-items: center; gap: 8px; background: var(--cream); border: 1px solid var(--gold);
+  border-radius: 999px; padding: 6px 12px; font-size: 0.8rem; color: var(--ink-soft);
+}
+.mm-file-preview .mm-file-chip button { border: none; background: none; color: var(--plum); cursor: pointer; font-weight: 700; }
+
+.mm-actions { text-align: center; margin-top: 18px; }
+.mm-download-btn {
+  display: inline-flex; align-items: center; gap: 8px; padding: 11px 22px; border-radius: 999px;
+  background: var(--gold-shine); color: var(--night-deep); border: none; font-weight: 600; font-size: 0.88rem;
+  cursor: pointer; font-family: inherit; box-shadow: 0 6px 16px rgba(163,114,31,0.35);
+}
+.mm-download-btn:disabled { opacity: 0.6; cursor: default; }
+
+.mm-feed { margin-top: 22px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+.mm-card { background: var(--white); border-radius: 12px; overflow: hidden; box-shadow: 0 4px 14px rgba(74,15,28,0.12); }
+.mm-card .mm-media { position: relative; cursor: pointer; }
+.mm-card img, .mm-card video { width: 100%; height: 120px; object-fit: cover; display: block; background: #000; }
+.mm-card .mm-play {
+  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 1.6rem; background: rgba(0,0,0,0.15); pointer-events: none;
+}
+.mm-card .mm-body { padding: 8px 10px; }
+.mm-card .mm-name { font-family: 'Cinzel', serif; font-size: 0.76rem; color: var(--plum); }
+.mm-card .mm-caption { font-size: 0.78rem; color: var(--ink-soft); margin-top: 2px; line-height: 1.35; }
+.mm-card.mm-text-only { grid-column: span 2; padding: 16px; text-align: center; }
+.mm-card.mm-text-only .mm-quote { font-style: italic; color: var(--ink); font-size: 0.92rem; }
+.mm-card.mm-text-only .mm-name { margin-top: 8px; }
+
+.lightbox {
+  display: none; position: fixed; inset: 0; z-index: 70; background: rgba(20,14,8,0.92);
+  align-items: center; justify-content: center; padding: 20px;
+}
+.lightbox.show { display: flex; }
+.lightbox-inner { max-width: 480px; width: 100%; text-align: center; }
+.lightbox-inner img, .lightbox-inner video { width: 100%; max-height: 70vh; border-radius: 10px; object-fit: contain; background: #000; }
+.lightbox-caption { color: var(--gold-light); font-size: 0.88rem; margin-top: 12px; }
+.lightbox-caption .lb-name { font-family: 'Cinzel', serif; color: var(--white); display: block; margin-bottom: 4px; }
+.lightbox-close {
+  position: absolute; top: -8px; right: -8px; width: 34px; height: 34px; border-radius: 50%;
+  background: var(--night); color: var(--gold-light); border: 1px solid rgba(242,215,140,0.4); cursor: pointer; font-size: 1rem;
+}
+.lightbox-inner { position: relative; }
 </style>
 </head>
 <body>
 
 <div class="top-bar-fixed">
-  <button class="float-btn" id="music-toggle" onclick="toggleMusic()">🔇 Música</button>
+  <button class="float-btn" id="music-toggle" onclick="toggleMusic()" title="Música" aria-label="Música">🔇</button>
 </div>
 <audio id="bgm" loop>
   <source src="media/beautiful-things.mp3" type="audio/mpeg">
@@ -333,7 +376,6 @@ p { line-height: 1.65; margin: 0; }
     <a href="#regalos">🎁 Mesa de regalos</a>
     <a href="#rsvp">✅ Confirmar</a>
     <a href="#fotos">📷 Fotos</a>
-    <a href="#firmas">💌 Firmas</a>
     <a href="#multimedia">🎥 Libro multimedia</a>
   </nav>
 
@@ -456,12 +498,6 @@ p { line-height: 1.65; margin: 0; }
     <div class="dress-card">
       <h3>Código de vestimenta — Formal</h3>
       <p class="story-text" style="margin-top:0;">Tonos burgundy y verde olivo. Evita el blanco, por favor 🍷🌿</p>
-      <div class="palette">
-        <div class="sw" style="background:#8a1538"></div>
-        <div class="sw" style="background:#5c7a29"></div>
-        <div class="sw" style="background:#c9973f"></div>
-        <div class="sw" style="background:#e6dcb8"></div>
-      </div>
     </div>
   </div>
 
@@ -514,26 +550,34 @@ p { line-height: 1.65; margin: 0; }
     </div>
   </div>
 
-  <div class="section-block reveal" style="padding-top:0;" id="firmas">
-    <span class="eyebrow">Déjanos un mensaje</span>
-    <h2>Libro de firmas</h2>
-    <p class="story-text">Escríbenos algo bonito — quedará guardado para siempre.</p>
-    <div class="gb-form">
-      <input type="text" id="gb-name" placeholder="Tu nombre" />
-      <textarea id="gb-msg" rows="3" placeholder="Tu mensaje para Yasmin y Edgar..."></textarea>
-      <button class="gb-btn" onclick="submitGuestbook()">Firmar el libro</button>
-    </div>
-    <div class="gb-list" id="gb-list"><div class="gb-empty">Cargando mensajes...</div></div>
-  </div>
-
   <div class="section-block reveal" style="padding-top:0;" id="fotos-compartidas">
     <span class="eyebrow">El momento es de todos</span>
     <h2 id="multimedia">Libro multimedia</h2>
-    <p class="story-text">Sube las fotos y videos que tomes el día del evento para que quedemos con todos los recuerdos juntos en un solo lugar.</p>
-    <label class="upload-zone" for="photo-upload">📎 Toca para subir una foto o video</label>
-    <input type="file" id="photo-upload" accept="image/*,video/*" style="display:none" onchange="handlePhotoUpload(event)" />
+    <p class="story-text">Sube tus fotos y videos del evento con un mensaje, o simplemente déjanos unas palabras — todo queda guardado aquí en un solo lugar.</p>
+
+    <div class="gb-form">
+      <input type="text" id="mm-name" placeholder="Tu nombre" />
+      <textarea id="mm-msg" rows="2" placeholder="Un mensaje para Yasmin y Edgar (opcional si subes una foto)..."></textarea>
+      <label class="upload-zone" for="photo-upload">📎 Toca para agregar una foto o video (opcional)</label>
+      <input type="file" id="photo-upload" accept="image/*,video/*" style="display:none" onchange="handleFileSelect(event)" />
+      <div id="mm-file-preview" class="mm-file-preview"></div>
+      <button class="gb-btn" onclick="submitMultimedia()">Compartir</button>
+    </div>
     <div class="upload-status" id="upload-status"></div>
-    <div class="shared-gallery" id="shared-gallery"></div>
+
+    <div class="mm-actions">
+      <button class="mm-download-btn" onclick="downloadAlbum()">⬇️ Descargar álbum completo</button>
+    </div>
+
+    <div class="mm-feed" id="mm-feed"><div class="gb-empty">Cargando recuerdos...</div></div>
+  </div>
+
+  <div class="lightbox" id="lightbox" onclick="closeLightbox(event)">
+    <div class="lightbox-inner">
+      <button class="lightbox-close" onclick="closeLightbox(event)">✕</button>
+      <div id="lightbox-media"></div>
+      <div class="lightbox-caption" id="lightbox-caption"></div>
+    </div>
   </div>
 
   <div class="inv-pass-wrap reveal">
@@ -560,10 +604,10 @@ function toggleMusic() {
   const btn = document.getElementById('music-toggle');
   if (musicPlaying) {
     audio.pause();
-    btn.innerHTML = '🔇 Música';
+    btn.innerHTML = '🔇';
   } else {
     audio.play().catch(() => {});
-    btn.innerHTML = '🎵 Música';
+    btn.innerHTML = '🎵';
   }
   musicPlaying = !musicPlaying;
 }
@@ -600,7 +644,7 @@ function initIntro() {
   if (audio) {
     audio.play().then(() => {
       musicPlaying = true;
-      document.getElementById('music-toggle').innerHTML = '🎵 Música';
+      document.getElementById('music-toggle').innerHTML = '🎵';
     }).catch(() => {
       // Algunos navegadores bloquean el audio con sonido hasta el primer toque:
       // en cuanto el invitado toque la pantalla por primera vez, arrancamos la música.
@@ -608,7 +652,7 @@ function initIntro() {
         if (!musicPlaying) {
           audio.play().then(() => {
             musicPlaying = true;
-            document.getElementById('music-toggle').innerHTML = '🎵 Música';
+            document.getElementById('music-toggle').innerHTML = '🎵';
           }).catch(() => {});
         }
         document.removeEventListener('click', startOnFirstTouch);
@@ -734,128 +778,185 @@ function copyClabe() {
   });
 }
 
-/* ---------------- LIBRO DE FIRMAS ---------------- */
+/* ---------------- LIBRO MULTIMEDIA (fotos, videos y firmas juntos) ---------------- */
 function escapeHtml(str) {
   const div = document.createElement('div');
   div.textContent = str == null ? '' : str;
   return div.innerHTML;
 }
 
-async function loadGuestbook() {
-  const list = document.getElementById('gb-list');
-  try {
-    const res = await fetch('/api/guestbook');
-    const entries = await res.json();
-    if (!entries.length) {
-      list.innerHTML = '<div class="gb-empty">Sé el primero en firmar el libro 💌</div>';
-      return;
-    }
-    list.innerHTML = entries.map(e => {
-      const date = new Date(e.created_at);
-      const dateStr = isNaN(date) ? '' : date.toLocaleDateString('es-MX', { day: '2-digit', month: 'short' });
-      return `<div class="gb-entry"><b>${escapeHtml(e.name)}</b>: ${escapeHtml(e.message)}<span class="gb-date">${dateStr}</span></div>`;
-    }).join('');
-  } catch (err) {
-    list.innerHTML = '<div class="gb-empty">No se pudieron cargar los mensajes.</div>';
-  }
-}
+let pendingFile = null; // { file, dataUrl, isVideo }
 
-async function submitGuestbook() {
-  const nameEl = document.getElementById('gb-name');
-  const msgEl = document.getElementById('gb-msg');
-  const name = nameEl.value.trim();
-  const message = msgEl.value.trim();
-  if (!name || !message) { alert('Escribe tu nombre y un mensaje.'); return; }
-  try {
-    await fetch('/api/guestbook', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, message })
-    });
-    nameEl.value = ''; msgEl.value = '';
-    loadGuestbook();
-  } catch (err) {
-    alert('No se pudo guardar tu mensaje. Intenta de nuevo.');
-  }
-}
-
-/* ---------------- FOTOS COMPARTIDAS ---------------- */
-async function loadSharedGallery() {
-  const gallery = document.getElementById('shared-gallery');
-  try {
-    const res = await fetch('/api/photos');
-    const photos = await res.json();
-    gallery.innerHTML = photos.map(p => {
-      const who = escapeHtml(p.guest_name || 'un invitado');
-      if (p.image_data.startsWith('data:video/')) {
-        return `<video src="${p.image_data}" controls playsinline preload="metadata" aria-label="Video compartido por ${who}"></video>`;
-      }
-      return `<img src="${p.image_data}" alt="Foto compartida por ${who}" loading="lazy" />`;
-    }).join('');
-  } catch (err) {
-    gallery.innerHTML = '';
-  }
-}
-
-function handlePhotoUpload(event) {
+function handleFileSelect(event) {
   const file = event.target.files[0];
+  event.target.value = '';
   if (!file) return;
   const statusEl = document.getElementById('upload-status');
-  event.target.value = '';
+  const preview = document.getElementById('mm-file-preview');
+  const isVideo = file.type.startsWith('video/');
 
-  if (file.type.startsWith('video/')) {
-    const maxBytes = 5 * 1024 * 1024; // ~5MB crudos, para no pasar el límite del servidor en base64
-    if (file.size > maxBytes) {
-      statusEl.textContent = 'Ese video pesa mucho para subirlo aquí (máx. ~5MB). Prueba con uno más corto o comprimido.';
-      return;
-    }
-    statusEl.textContent = 'Subiendo video...';
+  if (isVideo && file.size > 5 * 1024 * 1024) {
+    statusEl.textContent = 'Ese video pesa mucho (máx. ~5MB). Prueba con uno más corto o comprimido.';
+    return;
+  }
+  statusEl.textContent = '';
+
+  if (isVideo) {
     const reader = new FileReader();
-    reader.onload = async (e) => {
-      try {
-        const res = await fetch('/api/photos', {
-          method: 'POST', headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ guest_name: currentGuest ? currentGuest.data.name : null, image_data: e.target.result })
-        });
-        if (!res.ok) throw new Error('upload failed');
-        statusEl.textContent = '¡Video subido! Gracias por compartirlo 💛';
-        loadSharedGallery();
-      } catch (err) {
-        statusEl.textContent = 'No se pudo subir el video. Intenta de nuevo.';
-      }
+    reader.onload = (e) => {
+      pendingFile = { dataUrl: e.target.result, isVideo: true };
+      preview.innerHTML = `<span class="mm-file-chip">🎬 ${escapeHtml(file.name)} <button type="button" onclick="clearPendingFile()">✕</button></span>`;
     };
     reader.readAsDataURL(file);
     return;
   }
 
-  statusEl.textContent = 'Subiendo foto...';
   const img = new Image();
   const reader = new FileReader();
   reader.onload = (e) => {
-    img.onload = async () => {
-      // Comprimimos en el navegador para no saturar la base de datos
+    img.onload = () => {
       const maxW = 1200;
       const scale = Math.min(1, maxW / img.width);
       const canvas = document.createElement('canvas');
       canvas.width = img.width * scale;
       canvas.height = img.height * scale;
       canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
-      const dataUrl = canvas.toDataURL('image/jpeg', 0.75);
-
-      try {
-        const res = await fetch('/api/photos', {
-          method: 'POST', headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ guest_name: currentGuest ? currentGuest.data.name : null, image_data: dataUrl })
-        });
-        if (!res.ok) throw new Error('upload failed');
-        statusEl.textContent = '¡Foto subida! Gracias por compartirla 💛';
-        loadSharedGallery();
-      } catch (err) {
-        statusEl.textContent = 'No se pudo subir la foto. Intenta de nuevo.';
-      }
+      pendingFile = { dataUrl: canvas.toDataURL('image/jpeg', 0.75), isVideo: false };
+      preview.innerHTML = `<span class="mm-file-chip">📷 ${escapeHtml(file.name)} <button type="button" onclick="clearPendingFile()">✕</button></span>`;
     };
     img.src = e.target.result;
   };
   reader.readAsDataURL(file);
+}
+
+function clearPendingFile() {
+  pendingFile = null;
+  document.getElementById('mm-file-preview').innerHTML = '';
+}
+
+async function submitMultimedia() {
+  const nameEl = document.getElementById('mm-name');
+  const msgEl = document.getElementById('mm-msg');
+  const statusEl = document.getElementById('upload-status');
+  const name = nameEl.value.trim();
+  const message = msgEl.value.trim();
+
+  if (!name) { statusEl.textContent = 'Escribe tu nombre.'; nameEl.focus(); return; }
+  if (!pendingFile && !message) { statusEl.textContent = 'Escribe un mensaje o adjunta una foto/video.'; return; }
+
+  statusEl.textContent = pendingFile ? 'Subiendo...' : 'Guardando tu mensaje...';
+  try {
+    if (pendingFile) {
+      const res = await fetch('/api/photos', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ guest_name: name, caption: message || null, image_data: pendingFile.dataUrl })
+      });
+      if (!res.ok) throw new Error('upload failed');
+      statusEl.textContent = '¡Gracias por compartirlo! 💛';
+    } else {
+      const res = await fetch('/api/guestbook', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, message })
+      });
+      if (!res.ok) throw new Error('guestbook failed');
+      statusEl.textContent = '¡Gracias por tu mensaje! 💛';
+    }
+    nameEl.value = ''; msgEl.value = '';
+    clearPendingFile();
+    loadFeed();
+  } catch (err) {
+    statusEl.textContent = 'No se pudo guardar. Intenta de nuevo.';
+  }
+}
+
+let lastFeedItems = [];
+
+async function loadFeed() {
+  const feed = document.getElementById('mm-feed');
+  try {
+    const [photosRes, gbRes] = await Promise.all([fetch('/api/photos'), fetch('/api/guestbook')]);
+    const photos = await photosRes.json();
+    const messages = await gbRes.json();
+
+    const items = [
+      ...photos.map(p => ({ type: p.image_data.startsWith('data:video/') ? 'video' : 'image', name: p.guest_name || 'Un invitado', caption: p.caption || '', data: p.image_data, ts: p.created_at })),
+      ...messages.map(m => ({ type: 'text', name: m.name, caption: m.message, ts: m.created_at }))
+    ].sort((a, b) => new Date(b.ts) - new Date(a.ts));
+
+    lastFeedItems = items;
+
+    if (!items.length) {
+      feed.innerHTML = '<div class="gb-empty">Sé el primero en dejar un recuerdo aquí 💌</div>';
+      return;
+    }
+
+    feed.innerHTML = items.map((item, i) => {
+      if (item.type === 'text') {
+        return `<div class="mm-card mm-text-only">
+          <div class="mm-quote">"${escapeHtml(item.caption)}"</div>
+          <div class="mm-name">— ${escapeHtml(item.name)}</div>
+        </div>`;
+      }
+      const media = item.type === 'video'
+        ? `<video src="${item.data}" preload="metadata" muted></video><div class="mm-play">▶</div>`
+        : `<img src="${item.data}" alt="Foto de ${escapeHtml(item.name)}" loading="lazy" />`;
+      return `<div class="mm-card">
+        <div class="mm-media" onclick="openLightbox(${i})">${media}</div>
+        <div class="mm-body">
+          <div class="mm-name">${escapeHtml(item.name)}</div>
+          ${item.caption ? `<div class="mm-caption">${escapeHtml(item.caption)}</div>` : ''}
+        </div>
+      </div>`;
+    }).join('');
+  } catch (err) {
+    feed.innerHTML = '<div class="gb-empty">No se pudieron cargar los recuerdos.</div>';
+  }
+}
+
+function openLightbox(index) {
+  const item = lastFeedItems[index];
+  if (!item || item.type === 'text') return;
+  const mediaEl = document.getElementById('lightbox-media');
+  mediaEl.innerHTML = item.type === 'video'
+    ? `<video src="${item.data}" controls autoplay playsinline></video>`
+    : `<img src="${item.data}" alt="" />`;
+  document.getElementById('lightbox-caption').innerHTML = `<span class="lb-name">${escapeHtml(item.name)}</span>${escapeHtml(item.caption || '')}`;
+  document.getElementById('lightbox').classList.add('show');
+}
+
+function closeLightbox(event) {
+  if (event && event.target.closest('.lightbox-inner') && !event.target.classList.contains('lightbox-close')) return;
+  document.getElementById('lightbox').classList.remove('show');
+  document.getElementById('lightbox-media').innerHTML = '';
+}
+
+async function downloadAlbum() {
+  const btn = document.querySelector('.mm-download-btn');
+  const mediaItems = lastFeedItems.filter(i => i.type !== 'text');
+  if (!mediaItems.length) { alert('Todavía no hay fotos o videos para armar el álbum.'); return; }
+
+  btn.disabled = true;
+  btn.textContent = 'Preparando álbum...';
+  try {
+    const zip = new JSZip();
+    mediaItems.forEach((item, i) => {
+      const match = item.data.match(/^data:([^;]+);base64,(.+)$/);
+      if (!match) return;
+      const mime = match[1];
+      const ext = mime.split('/')[1] || (item.type === 'video' ? 'mp4' : 'jpg');
+      zip.file(`${String(i + 1).padStart(3, '0')}-${item.name.replace(/[^a-z0-9]+/gi, '-')}.${ext}`, match[2], { base64: true });
+    });
+    const blob = await zip.generateAsync({ type: 'blob' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'album-yasmin-edgar.zip'; a.click();
+    URL.revokeObjectURL(url);
+  } catch (err) {
+    alert('No se pudo armar el álbum. Intenta de nuevo.');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '⬇️ Descargar álbum completo';
+  }
 }
 
 /* ---------------- VIDEO "NUESTRA HISTORIA": play al llegar ---------------- */
@@ -887,8 +988,7 @@ if ('IntersectionObserver' in window) {
 }
 
 initGuestContext();
-loadGuestbook();
-loadSharedGallery();
+loadFeed();
 initIntro();
 </script>
 
