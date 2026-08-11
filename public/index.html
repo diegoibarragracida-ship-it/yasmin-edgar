@@ -156,14 +156,42 @@ p { line-height: 1.65; margin: 0; }
 .story-text { text-align: center; color: var(--ink-soft); font-size: 0.98rem; max-width: 380px; margin: 14px auto 0; }
 
 .gallery { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 22px; }
-.gallery img { width: 100%; height: 150px; object-fit: cover; border-radius: 10px; border: 3px solid var(--white); box-shadow: 0 0 0 1.5px var(--gold), 0 8px 18px rgba(74,15,28,0.2); }
+.gallery img { width: 100%; height: 150px; object-fit: cover; border-radius: 10px; border: 3px solid var(--white); box-shadow: 0 0 0 1.5px var(--gold), 0 8px 18px rgba(74,15,28,0.2); cursor: pointer; }
 .gallery img.tall { height: 100%; grid-row: span 2; }
+.gallery img.wide { grid-column: span 2; height: 190px; }
+
+.lightbox {
+  position: fixed; inset: 0; background: rgba(20,6,10,0.92); z-index: 200; display: none;
+  align-items: center; justify-content: center; padding: 20px;
+}
+.lightbox.show { display: flex; }
+.lightbox img { max-width: 100%; max-height: 85vh; border-radius: 10px; }
+.lightbox .lb-close {
+  position: absolute; top: 18px; right: 22px; color: var(--gold-light); font-size: 2rem;
+  background: none; border: none; cursor: pointer; line-height: 1;
+}
 
 .story-video-wrap {
   margin-top: 20px; border-radius: 14px; overflow: hidden; box-shadow: 0 10px 26px rgba(74,15,28,0.2);
-  border: 3px solid var(--white); outline: 1.5px solid var(--gold);
+  border: 3px solid var(--white); outline: 1.5px solid var(--gold); position: relative;
 }
 .story-video-wrap video { width: 100%; max-height: 420px; display: block; background: #000; }
+.story-video-lock-hint {
+  position: absolute; top: 10px; left: 50%; transform: translateX(-50%); z-index: 5;
+  background: rgba(20,8,12,0.75); color: var(--gold-light); font-size: 0.72rem; letter-spacing: 0.04em;
+  padding: 6px 14px; border-radius: 999px; opacity: 0; transition: opacity 0.4s ease; pointer-events: none;
+  white-space: nowrap;
+}
+.story-video-lock-hint.show { opacity: 1; }
+.story-video-play-btn {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 6;
+  width: 70px; height: 70px; border-radius: 50%; border: none; cursor: pointer;
+  background: var(--gold-shine); color: var(--night-deep); font-size: 1.6rem;
+  display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 24px rgba(0,0,0,0.45);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+.story-video-play-btn.hide { opacity: 0; pointer-events: none; transform: translate(-50%, -50%) scale(0.8); }
+body.scroll-locked { position: fixed; left: 0; right: 0; overflow: hidden; width: 100%; }
 
 /* --- Padrinos --- */
 .padrinos-grid { margin-top: 22px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
@@ -186,6 +214,10 @@ p { line-height: 1.65; margin: 0; }
 }
 .place-card h3 { color: var(--plum); font-size: 1.1rem; margin-bottom: 4px; }
 .place-card p { color: var(--ink-soft); font-size: 0.9rem; }
+.place-card a.mapbtn {
+  display: inline-flex; align-items: center; gap: 6px; margin-top: 10px; padding: 8px 16px;
+  border-radius: 999px; border: 1.4px solid var(--gold); color: var(--gold-dark); text-decoration: none; font-size: 0.8rem;
+}
 .place-card .tbd {
   display: inline-block; margin-top: 10px; font-size: 0.76rem; letter-spacing: 0.08em; text-transform: uppercase;
   color: var(--gold-dark); background: rgba(201,151,63,0.14); padding: 6px 14px; border-radius: 999px;
@@ -203,6 +235,10 @@ p { line-height: 1.65; margin: 0; }
 
 .dress-card { margin-top: 20px; text-align: center; }
 .dress-card h3 { color: var(--plum); font-size: 1.02rem; margin-bottom: 10px; }
+.dress-illustration {
+  margin: 14px auto 0; max-width: 280px; background: var(--white); border-radius: 16px; padding: 18px 10px;
+  box-shadow: 0 8px 20px rgba(74,15,28,0.12); border: 1px solid var(--cream-dark);
+}
 .palette { display: flex; justify-content: center; gap: 10px; margin-top: 12px; }
 .palette .sw { width: 30px; height: 30px; border-radius: 50%; border: 2px solid var(--white); box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
 
@@ -395,11 +431,14 @@ p { line-height: 1.65; margin: 0; }
   <div class="section-block reveal" id="fotos">
     <span class="eyebrow">Un vistazo a nuestro estilo</span>
     <h2>Fotos</h2>
-    <p class="story-text">Aquí iremos compartiendo fotos nuestras según se acerque la fecha. Por ahora, así imaginamos el ambiente de la celebración.</p>
+    <p class="story-text">Algunos de nuestros momentos favoritos juntos.</p>
     <div class="gallery">
-      <img class="tall" src="fotos-boda/foto5-mesa-exterior.jpg" alt="Mesa larga exterior con mantel olivo y flores burgundy" loading="lazy" />
-      <img src="fotos-boda/foto4-place-setting.jpg" alt="Montaje de mesa con velas, dalias burgundy y servilleta olivo" loading="lazy" />
-      <img src="https://images.pexels.com/photos/28115373/pexels-photo-28115373.jpeg?auto=compress&cs=tinysrgb&w=500" alt="Ramo de rosas rojo burgundy" loading="lazy" />
+      <img class="tall" src="fotos-pareja/foto1-luces-noche.jpg" alt="Yasmin y Edgar caminando bajo luces de noche" loading="lazy" onclick="openPhotoLightbox(this.src)" />
+      <img src="fotos-pareja/foto2-escalera-blanco.jpg" alt="Yasmin y Edgar en escalera" loading="lazy" onclick="openPhotoLightbox(this.src)" />
+      <img src="fotos-pareja/foto3-ramo-jardin.jpg" alt="Yasmin y Edgar abrazados con ramo de flores" loading="lazy" onclick="openPhotoLightbox(this.src)" />
+      <img class="wide" src="fotos-pareja/foto4-mirador-orizaba.jpg" alt="Yasmin y Edgar en mirador de Orizaba" loading="lazy" onclick="openPhotoLightbox(this.src)" />
+      <img src="fotos-pareja/foto5-playa.jpg" alt="Yasmin y Edgar viendo el mar" loading="lazy" onclick="openPhotoLightbox(this.src)" />
+      <img src="fotos-pareja/foto6-tronco-campo.jpg" alt="Yasmin y Edgar abrazados sobre un tronco" loading="lazy" onclick="openPhotoLightbox(this.src)" />
     </div>
   </div>
 
@@ -408,7 +447,9 @@ p { line-height: 1.65; margin: 0; }
     <h2>Nuestra historia</h2>
     <p class="story-text">El video comienza solo en cuanto llegas aquí.</p>
     <div class="story-video-wrap">
-      <video id="story-video" controls muted playsinline preload="metadata" poster="fotos-boda/foto5-mesa-exterior.jpg">
+      <div class="story-video-lock-hint" id="story-video-hint">🎬 Disfruta el video — el scroll vuelve al terminar</div>
+      <button class="story-video-play-btn" id="story-video-play-btn" aria-label="Reproducir video">▶</button>
+      <video id="story-video" controls playsinline preload="metadata" poster="fotos-pareja/foto1-luces-noche.jpg">
         <source src="media/nuestra-historia.mp4" type="video/mp4">
       </video>
     </div>
@@ -450,12 +491,14 @@ p { line-height: 1.65; margin: 0; }
     <div class="place-card" id="lugar">
       <h3>⛪ Ceremonia religiosa</h3>
       <p>1:00 PM</p>
-      <span class="tbd" id="lugar-detalle">Rectoría de la Divina Providencia</span>
+      <span class="tbd" id="lugar-detalle">Rectoría de la Divina Providencia</span><br/>
+      <a class="mapbtn" href="https://www.google.com/maps/place/Rector%C3%ADa+De+La+Divina+Providencia+de+Xalapa,Veracruz/@19.5377135,-96.9269211,17z" target="_blank" rel="noopener">📍 Cómo llegar</a>
     </div>
     <div class="place-card">
       <h3>🥂 Recepción y cóctel</h3>
       <p>2:30 PM</p>
-      <span class="tbd">Akura</span>
+      <span class="tbd">Akura</span><br/>
+      <a class="mapbtn" href="https://www.google.com/maps/search/?api=1&query=Akura+Xalapa+Veracruz" target="_blank" rel="noopener">📍 Cómo llegar</a>
     </div>
 
     <div class="timeline">
@@ -497,7 +540,7 @@ p { line-height: 1.65; margin: 0; }
   <div class="section-block reveal" style="padding-top:0;">
     <div class="dress-card">
       <h3>Código de vestimenta — Formal</h3>
-      <p class="story-text" style="margin-top:0;">Tonos burgundy y verde olivo. Evita el blanco, por favor 🍷🌿</p>
+      <p class="story-text" style="margin-top:0; font-size:2.2rem; letter-spacing:0.3em;">👗🍷🌿👔</p>
     </div>
   </div>
 
@@ -959,21 +1002,79 @@ async function downloadAlbum() {
   }
 }
 
-/* ---------------- VIDEO "NUESTRA HISTORIA": play al llegar ---------------- */
+/* ---------------- LIGHTBOX DE FOTOS (galería "Fotos") ---------------- */
+function openPhotoLightbox(src) {
+  document.getElementById('photo-lightbox-img').src = src;
+  document.getElementById('photo-lightbox').classList.add('show');
+}
+function closePhotoLightbox() {
+  document.getElementById('photo-lightbox').classList.remove('show');
+}
+
+/* ---------------- VIDEO "NUESTRA HISTORIA": requiere toque para reproducir con audio ---------------- */
 (function initStoryVideo() {
   const storyVideo = document.getElementById('story-video');
-  if (!storyVideo || !('IntersectionObserver' in window)) return;
-  let played = false;
-  const obs = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting && !played) {
-        played = true;
-        storyVideo.play().catch(() => {});
-        obs.unobserve(storyVideo);
-      }
+  const hint = document.getElementById('story-video-hint');
+  const playBtn = document.getElementById('story-video-play-btn');
+  const bgm = document.getElementById('bgm');
+  if (!storyVideo || !playBtn) return;
+
+  let savedScrollY = 0;
+  function lockScroll() {
+    savedScrollY = window.scrollY || window.pageYOffset;
+    document.body.style.top = `-${savedScrollY}px`;
+    document.body.classList.add('scroll-locked');
+    document.addEventListener('touchmove', preventScroll, { passive: false });
+    document.addEventListener('wheel', preventScroll, { passive: false });
+    if (hint) hint.classList.add('show');
+  }
+  function unlockScroll() {
+    document.body.classList.remove('scroll-locked');
+    document.body.style.top = '';
+    window.scrollTo(0, savedScrollY);
+    document.removeEventListener('touchmove', preventScroll);
+    document.removeEventListener('wheel', preventScroll);
+    if (hint) hint.classList.remove('show');
+  }
+  function preventScroll(e) {
+    if (!storyVideo.contains(e.target)) e.preventDefault();
+  }
+  function onVideoEnd() {
+    unlockScroll();
+    playBtn.classList.remove('hide'); // por si la vuelve a reproducir
+    if (bgm) {
+      bgm.play().then(() => {
+        musicPlaying = true;
+        const btn = document.getElementById('music-toggle');
+        if (btn) btn.innerHTML = '🎵';
+      }).catch(() => {});
+    }
+  }
+  function onVideoPause() {
+    if (!storyVideo.ended) unlockScroll();
+  }
+
+  // El play SOLO se dispara con este toque directo — así el navegador
+  // garantiza que el audio del video sí se escuche (no se puede confiar
+  // en reproducir automático con sonido sin que la persona interactúe).
+  playBtn.addEventListener('click', () => {
+    if (bgm && !bgm.paused) {
+      bgm.pause();
+      musicPlaying = false;
+      const btn = document.getElementById('music-toggle');
+      if (btn) btn.innerHTML = '🔇';
+    }
+    storyVideo.muted = false;
+    storyVideo.play().then(() => {
+      playBtn.classList.add('hide');
+      lockScroll();
+    }).catch(() => {
+      // aún con toque directo algo falló (raro) — dejamos los controles nativos disponibles
     });
-  }, { threshold: 0.5 });
-  obs.observe(storyVideo);
+  });
+  storyVideo.addEventListener('play', () => playBtn.classList.add('hide'));
+  storyVideo.addEventListener('ended', onVideoEnd);
+  storyVideo.addEventListener('pause', onVideoPause);
 })();
 
 /* ---------------- REVEAL ON SCROLL ---------------- */
@@ -991,6 +1092,11 @@ initGuestContext();
 loadFeed();
 initIntro();
 </script>
+
+<div class="lightbox" id="photo-lightbox" onclick="closePhotoLightbox()">
+  <button class="lb-close" onclick="closePhotoLightbox()">✕</button>
+  <img id="photo-lightbox-img" alt="Foto ampliada" />
+</div>
 
 </body>
 </html>
