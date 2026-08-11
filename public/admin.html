@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Panel de Yasmin &amp; Edgar — Nuestra boda</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Parisienne&family=Cinzel:wght@500;600;700&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <style>
 :root {
@@ -25,47 +25,76 @@
   --red: #a04030;
 }
 * { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
 body {
   margin: 0; font-family: 'Cormorant Garamond', Georgia, serif; color: var(--ink);
-  background: linear-gradient(160deg, var(--night), var(--night-deep) 75%);
+  background:
+    radial-gradient(ellipse at 15% 0%, rgba(196,30,79,0.22), transparent 55%),
+    radial-gradient(ellipse at 90% 15%, rgba(201,151,63,0.14), transparent 45%),
+    linear-gradient(160deg, var(--night), var(--night-deep) 75%);
   min-height: 100vh;
 }
 h1, h2, h3 { font-family: 'Cinzel', serif; margin: 0; font-weight: 600; }
+::selection { background: var(--gold); color: var(--night-deep); }
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: var(--night-deep); }
+::-webkit-scrollbar-thumb { background: var(--plum-soft); border-radius: 999px; }
 
 /* ---------- LOGIN ---------- */
 #login-screen {
   min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px;
 }
 .login-card {
-  background: var(--cream); border-radius: 18px; padding: 40px 32px; max-width: 380px; width: 100%;
-  text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+  background: var(--cream); border-radius: 20px; padding: 44px 34px; max-width: 380px; width: 100%;
+  text-align: center; box-shadow: 0 25px 60px rgba(0,0,0,0.5); border: 1px solid rgba(242,215,140,0.3);
 }
-.login-card .crown { font-size: 2.2rem; margin-bottom: 6px; }
-.login-card h1 { font-size: 1.3rem; color: var(--plum); margin-bottom: 4px; }
+.login-card .crown { font-size: 2.4rem; margin-bottom: 8px; }
+.login-card .script { display: block; font-family: 'Parisienne', cursive; font-size: 1.8rem; color: var(--plum); margin-bottom: 2px; }
+.login-card h1 { font-size: 1.05rem; color: var(--gold-dark); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 4px; }
 .login-card p { font-size: 0.86rem; color: var(--ink-soft); margin-top: 6px; }
 .login-card input {
-  width: 100%; margin-top: 20px; padding: 12px 14px; border-radius: 10px; border: 1px solid var(--cream-dark);
-  font-family: inherit; font-size: 1rem; text-align: center; background: var(--white);
+  width: 100%; margin-top: 22px; padding: 13px 14px; border-radius: 10px; border: 1px solid var(--cream-dark);
+  font-family: inherit; font-size: 1rem; text-align: center; background: var(--white); transition: border-color 0.2s ease;
 }
+.login-card input:focus { outline: none; border-color: var(--gold); }
 .login-card button {
-  margin-top: 14px; width: 100%; padding: 12px; border-radius: 10px; border: none;
-  background: var(--plum-soft); color: var(--white); font-size: 0.95rem; cursor: pointer; font-family: inherit;
+  margin-top: 14px; width: 100%; padding: 13px; border-radius: 10px; border: none;
+  background: linear-gradient(120deg, var(--plum), var(--plum-soft)); color: var(--white); font-size: 0.95rem;
+  cursor: pointer; font-family: inherit; letter-spacing: 0.03em; transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
+.login-card button:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(138,21,56,0.35); }
 .login-card .error { color: var(--red); font-size: 0.82rem; margin-top: 10px; min-height: 18px; }
 
 /* ---------- DASHBOARD ---------- */
-#dashboard { display: none; max-width: 1080px; margin: 0 auto; padding: 30px 20px 60px; }
-#dashboard.active { display: block; }
+#dashboard { display: none; max-width: 1080px; margin: 0 auto; padding: 0 20px 60px; }
+#dashboard.active { display: block; animation: dash-fade-in 0.5s ease; }
+@keyframes dash-fade-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-.dash-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 26px; }
+.quick-nav {
+  position: sticky; top: 0; z-index: 30; margin: 0 -20px 24px; padding: 12px 20px;
+  background: rgba(44,8,16,0.85); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(242,215,140,0.2);
+  display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none;
+}
+.quick-nav::-webkit-scrollbar { display: none; }
+.quick-nav a {
+  flex-shrink: 0; text-decoration: none; font-size: 0.78rem; letter-spacing: 0.03em;
+  color: var(--gold-light); border: 1px solid rgba(242,215,140,0.35); padding: 7px 14px; border-radius: 999px;
+  white-space: nowrap; font-family: 'Cormorant Garamond', serif; font-weight: 600; transition: background 0.2s ease, color 0.2s ease;
+}
+.quick-nav a:hover { background: var(--gold); color: var(--night-deep); border-color: transparent; }
+
+.dash-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 26px; padding-top: 22px; }
+.dash-header .title-block .script { display: block; font-family: 'Parisienne', cursive; font-size: 1.9rem; color: var(--gold-light); text-shadow: 0 0 20px rgba(242,215,140,0.35); }
 .dash-header .title-block .eyebrow { display: block; font-style: italic; letter-spacing: 0.2em; text-transform: uppercase; font-size: 0.72rem; color: var(--gold-light); }
-.dash-header h1 { color: var(--white); font-size: 1.7rem; margin-top: 4px; }
+.dash-header h1 { color: var(--white); font-size: 1.5rem; margin-top: 2px; }
 .dash-header .logout-btn {
   background: rgba(255,255,255,0.1); border: 1px solid rgba(255,235,124,0.35); color: var(--gold-light);
-  padding: 9px 16px; border-radius: 999px; font-size: 0.82rem; cursor: pointer; font-family: inherit;
+  padding: 9px 16px; border-radius: 999px; font-size: 0.82rem; cursor: pointer; font-family: inherit; transition: background 0.2s ease;
 }
+.dash-header .logout-btn:hover { background: rgba(255,255,255,0.2); }
 
-.dash-panel { background: var(--cream); border-radius: 18px; padding: 26px; margin-bottom: 22px; box-shadow: 0 12px 30px rgba(0,0,0,0.2); }
+.dash-panel { background: var(--cream); border-radius: 18px; padding: 26px; margin-bottom: 22px; box-shadow: 0 12px 30px rgba(0,0,0,0.2); border: 1px solid rgba(242,215,140,0.08); scroll-margin-top: 76px; transition: box-shadow 0.25s ease; }
+.dash-panel:hover { box-shadow: 0 16px 38px rgba(0,0,0,0.28); }
 .dash-panel h2 { color: var(--plum); font-size: 1.15rem; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
 .dash-panel .panel-sub { font-size: 0.85rem; color: var(--ink-soft); margin: -10px 0 18px; }
 
@@ -73,17 +102,20 @@ h1, h2, h3 { font-family: 'Cinzel', serif; margin: 0; font-weight: 600; }
 .stat-card {
   background: var(--white); border: 1px solid rgba(97,100,47,0.15); border-radius: 14px; padding: 18px;
   text-align: center; border-top: 3px solid var(--gold); box-shadow: 0 4px 14px rgba(74,15,28,0.05);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
-.stat-card .stat-icon { font-size: 1.1rem; margin-bottom: 4px; display: block; }
-.stat-card strong { display: block; font-family: 'Cinzel', serif; font-size: 1.9rem; color: var(--plum); }
+.stat-card:hover { transform: translateY(-3px); box-shadow: 0 10px 24px rgba(74,15,28,0.12); }
+.stat-card .stat-icon { font-size: 1.3rem; margin-bottom: 4px; display: block; }
+.stat-card strong { display: block; font-family: 'Cinzel', serif; font-size: 2rem; color: var(--plum); }
 .stat-card span { font-size: 0.74rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-soft); }
 
 /* ---------- MAPA DEL SALÓN ---------- */
 .venue-map { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; margin-top: 4px; }
 .table-card {
   background: var(--white); border-radius: 16px; padding: 18px; box-shadow: 0 6px 18px rgba(74,15,28,0.08);
-  border: 1px solid rgba(97,100,47,0.12); display: flex; flex-direction: column; gap: 12px;
+  border: 1px solid rgba(97,100,47,0.12); display: flex; flex-direction: column; gap: 12px; transition: box-shadow 0.2s ease;
 }
+.table-card:hover { box-shadow: 0 10px 26px rgba(74,15,28,0.14); }
 .table-card-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
 .table-card-head h3 { font-family: 'Cinzel', serif; font-size: 1rem; color: var(--plum); }
 .table-card-head .table-del { background: none; border: none; color: var(--ink-soft); cursor: pointer; font-size: 0.9rem; padding: 2px 4px; }
@@ -114,8 +146,9 @@ h1, h2, h3 { font-family: 'Cinzel', serif; margin: 0; font-weight: 600; }
 }
 .table-add-row button {
   padding: 8px 12px; border-radius: 8px; border: none; background: var(--olive-btn, #5c7a29); color: var(--white);
-  font-size: 0.8rem; cursor: pointer; font-family: inherit; white-space: nowrap;
+  font-size: 0.8rem; cursor: pointer; font-family: inherit; white-space: nowrap; transition: filter 0.15s ease;
 }
+.table-add-row button:hover { filter: brightness(1.12); }
 .table-add-row.new-guest { flex-wrap: wrap; }
 .table-add-row.new-guest input { flex: 1; min-width: 90px; padding: 8px 10px; border-radius: 8px; border: 1px solid var(--cream-dark); font-family: inherit; font-size: 0.82rem; }
 
@@ -136,9 +169,10 @@ h1, h2, h3 { font-family: 'Cinzel', serif; margin: 0; font-weight: 600; }
   width: 100%; padding: 11px 13px; border-radius: 9px; border: 1px solid var(--cream-dark); font-family: inherit; font-size: 0.95rem;
 }
 .create-form button {
-  padding: 11px 20px; border-radius: 9px; border: none; background: var(--plum-soft); color: var(--white);
-  font-size: 0.9rem; cursor: pointer; font-family: inherit; white-space: nowrap;
+  padding: 11px 20px; border-radius: 9px; border: none; background: linear-gradient(120deg, var(--plum), var(--plum-soft)); color: var(--white);
+  font-size: 0.9rem; cursor: pointer; font-family: inherit; white-space: nowrap; transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
+.create-form button:hover { transform: translateY(-1px); box-shadow: 0 8px 18px rgba(138,21,56,0.3); }
 @media (max-width: 560px) { .create-form { grid-template-columns: 1fr; } }
 
 .gen-result { margin-top: 18px; background: var(--night); color: var(--cream); border-radius: 14px; padding: 20px; display: none; }
@@ -167,6 +201,8 @@ table.guest-table th {
 }
 table.guest-table td { padding: 12px; border-bottom: 1px solid var(--cream-dark); font-size: 0.92rem; vertical-align: middle; }
 table.guest-table tr:last-child td { border-bottom: none; }
+table.guest-table tbody tr { transition: background 0.15s ease; }
+table.guest-table tbody tr:hover { background: rgba(201,151,63,0.06); }
 .badge { display: inline-block; padding: 4px 11px; border-radius: 999px; font-size: 0.76rem; white-space: nowrap; }
 .badge.yes { background: rgba(61,90,26,0.14); color: var(--green); }
 .badge.no { background: rgba(160,64,48,0.12); color: var(--red); }
@@ -221,15 +257,26 @@ table.guest-table tr:last-child td { border-bottom: none; }
 </div>
 
 <div id="dashboard">
+  <nav class="quick-nav">
+    <a href="#panel-crear">✨ Crear</a>
+    <a href="#panel-resumen">📊 Resumen</a>
+    <a href="#panel-mesas">🗺️ Mesas</a>
+    <a href="#panel-invitados">👥 Invitados</a>
+    <a href="#panel-general">🌐 Enlace general</a>
+    <a href="#panel-firmas">💌 Firmas</a>
+    <a href="#panel-fotos">📷 Fotos</a>
+  </nav>
+
   <div class="dash-header">
     <div class="title-block">
+      <span class="script">Yasmin &amp; Edgar</span>
       <span class="eyebrow">Panel privado</span>
-      <h1>Nuestra boda — Yasmin &amp; Edgar</h1>
+      <h1>Nuestra boda</h1>
     </div>
     <button class="logout-btn" onclick="doLogout()">Cerrar sesión</button>
   </div>
 
-  <div class="dash-panel">
+  <div class="dash-panel" id="panel-crear">
     <h2>➕ Crear invitación personalizada</h2>
     <div class="create-form">
       <div>
@@ -245,7 +292,7 @@ table.guest-table tr:last-child td { border-bottom: none; }
     <div class="gen-result" id="gen-result"></div>
   </div>
 
-  <div class="dash-panel">
+  <div class="dash-panel" id="panel-resumen">
     <h2>📊 Resumen</h2>
     <div class="stats-grid">
       <div class="stat-card"><span class="stat-icon">✅</span><strong id="st-confirmed">--</strong><span>Confirmaron</span></div>
@@ -256,7 +303,7 @@ table.guest-table tr:last-child td { border-bottom: none; }
     </div>
   </div>
 
-  <div class="dash-panel">
+  <div class="dash-panel" id="panel-mesas">
     <h2>🗺️ Mapa del salón</h2>
     <p class="panel-sub">Crea tus mesas y agrega invitados directamente a cada una. Ve de un vistazo cuántos lugares le quedan libres a cada mesa.</p>
     <div class="create-form">
@@ -281,7 +328,7 @@ table.guest-table tr:last-child td { border-bottom: none; }
     <div class="empty-state" id="unassigned-empty" style="display:none;">Todos tus invitados ya tienen mesa asignada 🎉</div>
   </div>
 
-  <div class="dash-panel">
+  <div class="dash-panel" id="panel-invitados">
     <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:6px;">
       <h2 style="margin-bottom:0;">👥 Todos los invitados</h2>
       <div class="dash-actions" style="margin-bottom:0;">
@@ -305,7 +352,7 @@ table.guest-table tr:last-child td { border-bottom: none; }
     <div class="empty-state" id="guest-empty" style="display:none;">Aún no has agregado invitados. Usa el formulario de arriba.</div>
   </div>
 
-  <div class="dash-panel">
+  <div class="dash-panel" id="panel-general">
     <h2>🌐 Confirmaciones del enlace general</h2>
     <p style="font-size:0.85rem; color:var(--ink-soft); margin-bottom:14px;">Respuestas de personas que entraron sin un link personalizado.</p>
     <table class="guest-table">
@@ -317,7 +364,7 @@ table.guest-table tr:last-child td { border-bottom: none; }
     <div class="empty-state" id="anon-empty" style="display:none;">Nadie ha confirmado por el enlace público todavía.</div>
   </div>
 
-  <div class="dash-panel">
+  <div class="dash-panel" id="panel-firmas">
     <h2>💌 Libro de firmas</h2>
     <p style="font-size:0.85rem; color:var(--ink-soft); margin-bottom:14px;">Mensajes que los invitados han dejado en la invitación. Puedes borrar los que no quieras conservar.</p>
     <table class="guest-table">
@@ -327,7 +374,7 @@ table.guest-table tr:last-child td { border-bottom: none; }
     <div class="empty-state" id="gb-empty" style="display:none;">Nadie ha firmado el libro todavía.</div>
   </div>
 
-  <div class="dash-panel">
+  <div class="dash-panel" id="panel-fotos">
     <h2>📷 Fotos compartidas por invitados</h2>
     <p style="font-size:0.85rem; color:var(--ink-soft); margin-bottom:14px;">Fotos que los invitados suben desde la invitación. Puedes eliminar cualquiera que no quieras conservar.</p>
     <div class="photo-mod-grid" id="photo-mod-grid"></div>
