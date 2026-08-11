@@ -150,7 +150,7 @@ p { line-height: 1.65; margin: 0; }
 .inv-hero {
   padding: 30px 30px 50px; text-align: center; color: var(--white); position: relative;
   background: linear-gradient(180deg, rgba(74,15,28,0.35), rgba(44,8,16,0.85)),
-              url('https://images.pexels.com/photos/28115373/pexels-photo-28115373.jpeg?auto=compress&cs=tinysrgb&w=1200') center 30%/cover;
+              url('fotos-pareja/foto3-ramo-jardin.jpg') center center/cover;
 }
 .inv-hero .eyebrow { font-style: italic; letter-spacing: 0.26em; text-transform: uppercase; font-size: 0.72rem; color: var(--gold-light); }
 .inv-hero h1 { font-family: 'Parisienne', cursive; font-weight: 400; font-size: 3.4rem; margin: 12px 0 4px; line-height: 1; color: var(--gold-light); text-shadow: 0 0 30px rgba(242,215,140,0.35), 0 2px 14px rgba(0,0,0,0.4); }
@@ -169,6 +169,7 @@ p { line-height: 1.65; margin: 0; }
   background-repeat: no-repeat; background-position: center;
 }
 .story-text { text-align: center; color: var(--ink-soft); font-size: 0.98rem; max-width: 380px; margin: 14px auto 0; }
+#historia .story-text { font-weight: 600; color: var(--ink); font-size: 1.02rem; max-width: 400px; }
 
 .gallery { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 22px; }
 .gallery img { width: 100%; height: 150px; object-fit: cover; border-radius: 10px; border: 3px solid var(--white); box-shadow: 0 0 0 1.5px var(--gold), 0 8px 18px rgba(74,15,28,0.2); cursor: pointer; }
@@ -448,7 +449,7 @@ body.scroll-locked { position: fixed; left: 0; right: 0; overflow: hidden; width
   <div class="section-block reveal" id="fotos">
     <span class="eyebrow">Un vistazo a nuestro estilo</span>
     <h2>Fotos</h2>
-    <p class="story-text">Algunos de nuestros momentos favoritos juntos.</p>
+    <p class="story-text">Algunos de nuestros momentos favoritos juntos — toca cualquier foto para verla más grande.</p>
     <div class="gallery">
       <img class="tall" src="fotos-pareja/foto1-luces-noche.jpg" alt="Yasmin y Edgar caminando bajo luces de noche" loading="lazy" onclick="openPhotoLightbox(this.src)" />
       <img src="fotos-pareja/foto2-escalera-blanco.jpg" alt="Yasmin y Edgar en escalera" loading="lazy" onclick="openPhotoLightbox(this.src)" />
@@ -631,9 +632,10 @@ body.scroll-locked { position: fixed; left: 0; right: 0; overflow: hidden; width
   </div>
 
   <div class="section-block reveal" style="padding-top:0;" id="fotos-compartidas">
-    <span class="eyebrow">El momento es de todos</span>
+    <span class="eyebrow">Ahora te toca a ti</span>
     <h2 id="multimedia">Libro multimedia</h2>
-    <p class="story-text">Sube tus fotos y videos del evento con un mensaje, o simplemente déjanos unas palabras — todo queda guardado aquí en un solo lugar.</p>
+    <p class="story-text">Este es tu espacio: déjanos un mensaje, y si quieres, agrega una foto o video del evento. Todo lo que compartas aparece aquí abajo, visible para nosotros y para el resto de los invitados — es un álbum de recuerdos hecho entre todos.</p>
+    <p class="story-text" style="margin-top:8px; font-size:0.85rem;">📷 No es obligatorio subir algo — también puedes dejar solo tu mensaje.</p>
 
     <div class="gb-form">
       <input type="text" id="mm-name" placeholder="Tu nombre" />
@@ -649,6 +651,7 @@ body.scroll-locked { position: fixed; left: 0; right: 0; overflow: hidden; width
       <button class="mm-download-btn" onclick="downloadAlbum()">⬇️ Descargar álbum completo</button>
     </div>
 
+    <p class="story-text" style="margin-top:4px; font-size:0.8rem;">👇 Esto es lo que ya han compartido los demás invitados:</p>
     <div class="mm-feed" id="mm-feed"><div class="gb-empty">Cargando recuerdos...</div></div>
   </div>
 
