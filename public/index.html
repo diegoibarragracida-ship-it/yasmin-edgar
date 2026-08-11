@@ -812,6 +812,7 @@ function applyGuestContext() {
   const greetName = document.getElementById('greeting-name');
   const passName = document.getElementById('pass-name-text');
   const passTable = document.getElementById('pass-table-text');
+  const passCount = document.getElementById('pass-count-text');
 
   nameField.value = g.name;
   nameField.readOnly = true;
@@ -828,6 +829,7 @@ function applyGuestContext() {
   }
   if (passName) passName.textContent = g.name;
   if (passTable) passTable.textContent = g.table_name ? `Mesa: ${g.table_name}` : '';
+  if (passCount) passCount.textContent = `Válido para ${g.passes} persona${g.passes > 1 ? 's' : ''}`;
 
   if (g.status === 'yes' || g.status === 'no') {
     document.getElementById('rsvp-yes').classList.toggle('chosen-yes', g.status === 'yes');
