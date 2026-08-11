@@ -41,6 +41,21 @@ body {
   min-height: 100vh;
   display: flex; justify-content: center;
 }
+
+/* --- pétalos flotantes con brillo --- */
+.petal-layer { position: fixed; inset: 0; pointer-events: none; z-index: 4; overflow: hidden; }
+.petal {
+  position: absolute; top: -40px; opacity: 0;
+  animation: petal-fall linear infinite;
+}
+.petal svg { display: block; filter: drop-shadow(0 0 6px var(--glow-color, rgba(242,215,140,0.8))) drop-shadow(0 0 14px var(--glow-color, rgba(242,215,140,0.5))); }
+@keyframes petal-fall {
+  0% { transform: translateY(-8vh) translateX(0) rotate(0deg); opacity: 0; }
+  8% { opacity: 0.95; }
+  50% { transform: translateY(50vh) translateX(var(--drift, 30px)) rotate(180deg); }
+  92% { opacity: 0.85; }
+  100% { transform: translateY(112vh) translateX(calc(var(--drift, 30px) * -1)) rotate(360deg); opacity: 0; }
+}
 h1,h2,h3 { font-family: 'Cinzel', serif; margin: 0; font-weight: 600; letter-spacing: 0.02em; }
 p { line-height: 1.65; margin: 0; }
 .script { font-family: 'Parisienne', cursive; }
@@ -382,6 +397,8 @@ body.scroll-locked { position: fixed; left: 0; right: 0; overflow: hidden; width
 </head>
 <body>
 
+<div class="petal-layer" id="petal-layer"></div>
+
 <div class="top-bar-fixed">
   <button class="float-btn" id="music-toggle" onclick="toggleMusic()" title="Música" aria-label="Música">🔇</button>
 </div>
@@ -445,8 +462,26 @@ body.scroll-locked { position: fixed; left: 0; right: 0; overflow: hidden; width
   <div class="section-block reveal" style="padding-top:0;" id="historia">
     <span class="eyebrow">Cómo llegamos hasta aquí</span>
     <h2>Nuestra historia</h2>
-    <p class="story-text">El video comienza solo en cuanto llegas aquí.</p>
-    <div class="story-video-wrap">
+
+    <p class="story-text">A veces, las historias más bonitas comienzan sin que nadie sepa que están comenzando. La nuestra empezó con una conversación, con miradas que poco a poco dejaron de ser casualidad, con risas, curiosidad y esas primeras palabras que todavía no sabían todo lo que llegarían a significar.</p>
+
+    <p class="story-text">Y casi sin darnos cuenta, comenzamos a elegirnos. Lo que empezó como una atracción se convirtió en complicidad; la complicidad, en cariño… y el cariño, en un amor tan profundo que pronto dejamos de hablar de un "algún día" para comenzar a imaginar un "toda la vida".</p>
+
+    <p class="story-text">Llegaron los besos, las citas, los "te extraño", los "te amo" y los sueños compartidos. Y un día entendimos que ya no queríamos solamente compartir momentos… queríamos compartir la vida.</p>
+
+    <p class="story-text">En Roca Partida, frente al mar y bajo un horizonte infinito, llegó una de las preguntas más importantes de nuestra historia. Y con un "sí", dejamos de imaginar nuestro futuro para comenzar a construirlo.</p>
+
+    <p class="story-text">Después vinieron los planes, el hogar que soñábamos, los preparativos de nuestra boda y cada pequeño detalle que nos recordaba que aquello que alguna vez comenzó como una conversación se estaba convirtiendo en una familia.</p>
+
+    <p class="story-text">Hoy sabemos que un hogar no es un lugar. Hogar es encontrarnos. Es elegirnos. Es saber que, pase lo que pase, tenemos dónde volver.</p>
+
+    <p class="story-text">Y así llegamos hasta aquí… de la mano, con sueños nuevos, recuerdos que ya son eternos y la certeza de que todavía nos queda la parte más hermosa de nuestra historia por escribir.</p>
+
+    <p class="story-text">Porque nuestra historia no termina el día de nuestra boda. Ese día apenas comienza…</p>
+
+    <p class="script" style="text-align:center; font-size:1.7rem; color:var(--plum); margin-top:16px;">Hoy, mañana &amp; siempre.</p>
+
+    <div class="story-video-wrap" style="margin-top:26px;">
       <div class="story-video-lock-hint" id="story-video-hint">🎬 Disfruta el video — el scroll vuelve al terminar</div>
       <button class="story-video-play-btn" id="story-video-play-btn" aria-label="Reproducir video">▶</button>
       <video id="story-video" controls playsinline preload="metadata" poster="fotos-pareja/foto1-luces-noche.jpg">
@@ -548,7 +583,8 @@ body.scroll-locked { position: fixed; left: 0; right: 0; overflow: hidden; width
     <span class="eyebrow">Con todo nuestro cariño</span>
     <h2>Mesa de regalos</h2>
     <div class="gift-card">
-      <p class="lead">Su presencia es el regalo más importante para nosotros. Si desean obsequiarnos algo más, aquí tienen dos opciones:</p>
+      <p class="lead">Tu presencia es el regalo más importante para nosotros — pero si además traes un sobre… ¡mejor! 😄</p>
+      <p class="lead" style="margin-top:10px;">No tenemos mesa de regalos tradicional; si desean apoyarnos, nos encantaría que nos ayudaran a financiar nuestra luna de miel 💛</p>
       <a href="https://mesaderegalos.liverpool.com.mx/milistaderegalos/51969748" target="_blank" rel="noopener" class="liverpool-btn">🎁 Ver mesa de regalos en Liverpool</a>
       <div class="bank-box">
         <div class="bank-row">
@@ -571,6 +607,7 @@ body.scroll-locked { position: fixed; left: 0; right: 0; overflow: hidden; width
           <button class="copy-btn" onclick="copyClabe()">Copiar</button>
         </div>
       </div>
+      <p class="lead" style="margin-top:14px; font-size:0.85rem;">🎁 En la entrada del salón habrá un cofre decorado para dejar tu sobre en efectivo, si lo prefieres así.</p>
       <div class="gift-note" id="clabe-msg">Gracias por acompañarnos y celebrar con nosotros 💛</div>
     </div>
   </div>
@@ -1075,6 +1112,44 @@ function closePhotoLightbox() {
   storyVideo.addEventListener('play', () => playBtn.classList.add('hide'));
   storyVideo.addEventListener('ended', onVideoEnd);
   storyVideo.addEventListener('pause', onVideoPause);
+})();
+
+/* ---------------- PÉTALOS FLOTANTES CON BRILLO ---------------- */
+(function initPetals() {
+  const layer = document.getElementById('petal-layer');
+  if (!layer) return;
+
+  const colors = [
+    { fill: '#8a1538', glow: 'rgba(196,30,79,0.75)' },  // burgundy
+    { fill: '#a01d41', glow: 'rgba(196,30,79,0.65)' },  // burgundy claro
+    { fill: '#5c7a29', glow: 'rgba(140,180,70,0.75)' },  // verde olivo
+    { fill: '#7a9a3c', glow: 'rgba(140,180,70,0.6)' },  // olivo claro
+  ];
+
+  function petalSVG(fill) {
+    return `<svg width="18" height="22" viewBox="0 0 18 22" xmlns="http://www.w3.org/2000/svg">
+      <path d="M9 0 C15 4 18 11 9 22 C0 11 3 4 9 0 Z" fill="${fill}"/>
+    </svg>`;
+  }
+
+  function spawnPetal() {
+    const c = colors[Math.floor(Math.random() * colors.length)];
+    const el = document.createElement('div');
+    el.className = 'petal';
+    el.innerHTML = petalSVG(c.fill);
+    el.style.setProperty('--glow-color', c.glow);
+    el.style.left = Math.random() * 100 + '%';
+    const size = 0.6 + Math.random() * 0.9;
+    el.style.transform = `scale(${size})`;
+    el.style.setProperty('--drift', (20 + Math.random() * 60) + 'px');
+    const duration = 10 + Math.random() * 9;
+    el.style.animationDuration = duration + 's';
+    layer.appendChild(el);
+    setTimeout(() => el.remove(), duration * 1000 + 200);
+  }
+
+  for (let i = 0; i < 6; i++) setTimeout(spawnPetal, i * 700);
+  setInterval(spawnPetal, 1500);
 })();
 
 /* ---------------- REVEAL ON SCROLL ---------------- */
