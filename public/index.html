@@ -261,16 +261,32 @@ body.scroll-locked { position: fixed; left: 0; right: 0; overflow: hidden; width
 /* --- Mesa de regalos / cuenta bancaria --- */
 .gift-card {
   margin-top: 20px; text-align: center; background: linear-gradient(160deg, var(--night), var(--night-deep) 85%);
-  color: var(--cream); border-radius: 16px; padding: 26px 22px; box-shadow: 0 10px 26px rgba(0,0,0,0.25);
+  color: var(--cream); border-radius: 20px; padding: 30px 24px; box-shadow: 0 10px 26px rgba(0,0,0,0.25);
+  border: 1px solid rgba(242,215,140,0.15);
 }
-.gift-card p.lead { font-size: 0.92rem; color: rgba(250,246,236,0.85); max-width: 340px; margin: 0 auto; }
+.gift-card p.lead { font-size: 0.94rem; color: rgba(250,246,236,0.9); max-width: 340px; margin: 0 auto; line-height: 1.55; }
+.gift-divider { display: flex; align-items: center; gap: 10px; margin: 20px auto; max-width: 260px; color: var(--gold-light); font-size: 0.9rem; }
+.gift-divider::before, .gift-divider::after { content: ""; flex: 1; height: 1px; background: linear-gradient(90deg, transparent, var(--gold), transparent); }
+
+.gift-options { margin-top: 22px; text-align: left; }
+.gift-option { display: flex; align-items: center; gap: 16px; padding: 16px 0; }
+.gift-option + .gift-option { border-top: 1px solid rgba(242,215,140,0.15); }
+.gift-icon {
+  flex-shrink: 0; width: 58px; height: 58px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  background: rgba(242,215,140,0.08); border: 1.4px solid rgba(242,215,140,0.5);
+}
+.gift-icon svg { width: 26px; height: 26px; stroke: var(--gold-light); fill: none; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.gift-option-title { font-family: 'Cinzel', serif; font-size: 0.92rem; letter-spacing: 0.03em; color: var(--gold-light); margin-bottom: 3px; }
+.gift-option-desc { font-size: 0.85rem; color: rgba(250,246,236,0.78); line-height: 1.45; }
+.gift-option-desc a { color: var(--gold-light); }
+
 .liverpool-btn {
-  display: inline-flex; align-items: center; gap: 8px; margin-top: 16px; padding: 12px 22px;
+  display: inline-flex; align-items: center; gap: 8px; margin-top: 4px; padding: 12px 22px;
   border-radius: 999px; background: var(--gold-shine); color: var(--night-deep); font-weight: 600;
   text-decoration: none; font-size: 0.9rem; box-shadow: 0 6px 16px rgba(163,114,31,0.35);
 }
 .bank-box {
-  margin-top: 18px; background: rgba(255,255,255,0.08); border: 1px solid rgba(242,215,140,0.35);
+  margin: 4px 0 8px; background: rgba(255,255,255,0.08); border: 1px solid rgba(242,215,140,0.35);
   border-radius: 12px; padding: 16px; text-align: left;
 }
 .bank-box .bank-row { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 6px 0; }
@@ -282,6 +298,7 @@ body.scroll-locked { position: fixed; left: 0; right: 0; overflow: hidden; width
   padding: 5px 10px; border-radius: 999px; cursor: pointer; font-family: inherit; flex-shrink: 0;
 }
 .gift-note { font-size: 0.78rem; color: rgba(250,246,236,0.6); margin-top: 14px; }
+.gift-heart { font-size: 1.3rem; margin-top: 14px; }
 
 .inv-rsvp { background: linear-gradient(160deg, var(--plum-soft), var(--night) 80%); color: var(--white); padding: 40px 30px; text-align: center; }
 .inv-rsvp .eyebrow { color: var(--gold-light); }
@@ -584,32 +601,77 @@ body.scroll-locked { position: fixed; left: 0; right: 0; overflow: hidden; width
     <span class="eyebrow">Con todo nuestro cariño</span>
     <h2>Mesa de regalos</h2>
     <div class="gift-card">
-      <p class="lead">Tu presencia es el regalo más importante para nosotros — pero si además traes un sobre… ¡mejor! 😄</p>
-      <p class="lead" style="margin-top:10px;">No tenemos mesa de regalos tradicional; si desean apoyarnos, nos encantaría que nos ayudaran a financiar nuestra luna de miel 💛</p>
-      <a href="https://mesaderegalos.liverpool.com.mx/milistaderegalos/51969748" target="_blank" rel="noopener" class="liverpool-btn">🎁 Ver mesa de regalos en Liverpool</a>
-      <div class="bank-box">
-        <div class="bank-row">
-          <div>
-            <div class="bank-label">Banco</div>
-            <div class="bank-value">Banamex</div>
+      <p class="lead">Su presencia es el regalo más valioso que podemos recibir en nuestro gran día.</p>
+      <div class="gift-divider">♥</div>
+      <p class="lead">Si además desean hacernos un obsequio, pueden elegir la opción que prefieran:</p>
+
+      <div class="gift-options">
+        <div class="gift-option">
+          <div class="gift-icon">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="8" width="18" height="4"/><path d="M12 8v13"/><path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5C11 3 12 8 12 8"/><path d="M16.5 8a2.5 2.5 0 0 0 0-5C13 3 12 8 12 8"/></svg>
+          </div>
+          <div class="gift-option-text">
+            <div class="gift-option-title">Mesa de regalos Liverpool</div>
+            <div class="gift-option-desc">Encuentra nuestra mesa de regalos en Liverpool. <a href="https://mesaderegalos.liverpool.com.mx/milistaderegalos/51969748" target="_blank" rel="noopener">Ver mesa →</a></div>
           </div>
         </div>
-        <div class="bank-row">
-          <div>
-            <div class="bank-label">A nombre de</div>
-            <div class="bank-value">Yasmin Sangabriel Mendoza</div>
+
+        <div class="gift-option">
+          <div class="gift-icon">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 8.97 6.02a2 2 0 0 0 2.06 0L22 7"/></svg>
+          </div>
+          <div class="gift-option-text">
+            <div class="gift-option-title">Sobre</div>
+            <div class="gift-option-desc">En la entrada del salón habrá un cofre decorado para dejar tu sobre.</div>
           </div>
         </div>
-        <div class="bank-row">
-          <div>
-            <div class="bank-label">CLABE interbancaria</div>
-            <div class="bank-value" id="clabe-text">0028 4070 2353 3598 96</div>
+
+        <div class="gift-option">
+          <div class="gift-icon">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><line x1="3" y1="22" x2="21" y2="22"/><line x1="6" y1="18" x2="6" y2="11"/><line x1="10" y1="18" x2="10" y2="11"/><line x1="14" y1="18" x2="14" y2="11"/><line x1="18" y1="18" x2="18" y2="11"/><polygon points="12 2 21 8 3 8"/></svg>
           </div>
-          <button class="copy-btn" onclick="copyClabe()">Copiar</button>
+          <div class="gift-option-text">
+            <div class="gift-option-title">Transferencia</div>
+            <div class="gift-option-desc">Si prefieres hacernos tu regalo de manera electrónica:</div>
+          </div>
+        </div>
+        <div class="bank-box">
+          <div class="bank-row">
+            <div>
+              <div class="bank-label">Banco</div>
+              <div class="bank-value">Banamex</div>
+            </div>
+          </div>
+          <div class="bank-row">
+            <div>
+              <div class="bank-label">A nombre de</div>
+              <div class="bank-value">Yasmin Sangabriel Mendoza</div>
+            </div>
+          </div>
+          <div class="bank-row">
+            <div>
+              <div class="bank-label">CLABE interbancaria</div>
+              <div class="bank-value" id="clabe-text">0028 4070 2353 3598 96</div>
+            </div>
+            <button class="copy-btn" onclick="copyClabe()">Copiar</button>
+          </div>
+        </div>
+        <div class="gift-note" id="clabe-msg" style="text-align:center;"></div>
+
+        <div class="gift-option" style="border-top: 1px solid rgba(242,215,140,0.15);">
+          <div class="gift-icon">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          </div>
+          <div class="gift-option-text">
+            <div class="gift-option-title">Regalo físico</div>
+            <div class="gift-option-desc">Si desean obsequiarnos algo físico, será recibido con mucho cariño.</div>
+          </div>
         </div>
       </div>
-      <p class="lead" style="margin-top:14px; font-size:0.85rem;">🎁 En la entrada del salón habrá un cofre decorado para dejar tu sobre en efectivo, si lo prefieres así.</p>
-      <div class="gift-note" id="clabe-msg">Gracias por acompañarnos y celebrar con nosotros 💛</div>
+
+      <div class="gift-divider">♥</div>
+      <p class="lead">Gracias por ser parte de esta historia y por acompañarnos en este día tan especial.</p>
+      <div class="gift-heart">💛</div>
     </div>
   </div>
 
